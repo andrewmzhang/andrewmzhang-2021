@@ -2,6 +2,8 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
+show_drafts: true
+
 title: blank # the website title (if blank, full name will be used instead)
 first_name:  Andrew
 middle_name: M.
