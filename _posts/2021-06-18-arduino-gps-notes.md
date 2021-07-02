@@ -3,12 +3,15 @@ layout: post
 title: Notes on Arduino GPS Library
 tags: GPS SIM808 DFRobot arduino arduino-sim808 
 category: tech
+description: playing around with the DFRobot SIM808 shield and some SIM808 libraries...
+comments: true
+author: Andrew M. Zhang
 ---
 
 
 Note: I splurged on a better quality (though way more expensive) shields from sparkfun. Thus this post will probably remain unupdated. 
 
-#### Abstract
+#### Intro
 
 I bought DFRobot SIM 808 shield. Cheap shield. However, the library provided by DFRobot is not great. Here are my notes and possible solutions and a low quality fork. 
 
@@ -60,6 +63,8 @@ This library has super good logic, also really clean code, fully featured. Some 
 ## Cons
 
 It doesn't work on the DFRobot shield very well. Also no comments so its a pain to figure out how it works. 
+
+There is also a [bug](https://github.com/blemasle/arduino-sim808/issues/19)!
 
 # Fixes
 
