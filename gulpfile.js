@@ -91,7 +91,7 @@ function encrypt(password) {
 
 gulp.task('firewall:encrypt', () => {
   return gulp.src('_protected/*.*')
-    .pipe(encrypt('password'))
+    .pipe(encrypt('supernodesecurities'))
     .pipe(rename({extname: '.md.priv'}))
     .pipe(gulp.dest('_posts'));
 });
