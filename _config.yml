@@ -114,7 +114,7 @@ kramdown:
 
 # Includes & excludes
 include: ['_pages']
-exclude: [vendor, '_pages/projects.md', '_pages/teaching.md']
+exclude: [vendor, '_pages/projects.md', '_pages/teaching.md', 'node_modules']
 
 # Plug-ins
 plugins:
