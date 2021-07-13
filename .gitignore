@@ -9,3 +9,5 @@ Gemfile.lock
 vendor
 node_modules/
 *.priv
+*.code-workspace
+

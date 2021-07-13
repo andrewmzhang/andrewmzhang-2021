@@ -9,7 +9,7 @@ author: Andrew M. Zhang
 ---
 
 
-Note: I splurged on a better quality (though way more expensive) shields from sparkfun. Thus this post will probably remain unupdated. 
+Disclaimer: I splurged on a better quality (though way more expensive) shields from sparkfun. Thus this post will probably remain unupdated. I'm also a noob. These are opinions are weak at best. 
 
 #### Intro
 
