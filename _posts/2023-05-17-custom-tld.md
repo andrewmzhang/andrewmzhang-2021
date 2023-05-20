@@ -8,6 +8,9 @@ giscus_comments: true
 author: Andrew M. Zhang
 ---
 
+Note: It's like 2am and I was too sleepy to edit this, so I fed it through chatGPT and called it a day. I think it
+made some minor mistakes and poor word choice. I'll fix it tomorrow or something... 
+
 # Intro
 
 Tailscale is a Wireguard-based VPN software that I rely on for secure and remote access across my devices. I appreciate
