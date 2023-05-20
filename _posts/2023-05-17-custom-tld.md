@@ -4,7 +4,7 @@ title: Custom TLD Over Private Network
 tags: AndyWebServices
 category: tech
 description: Pretending to be a legit enterprise with my own TLD
-comments: true
+giscus_comments: true
 author: Andrew M. Zhang
 ---
 
