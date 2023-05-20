@@ -310,8 +310,7 @@ solution. This way, you can readily access and install it on new devices wheneve
 
 <p>You can refer to the guides provided at https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/ for detailed
 instructions on setting up various ACME clients. However, if you’re looking for a straightforward and user-friendly
-option, I
-recommend using acme.sh.</p>
+option, I recommend using acme.sh.</p>
 
 <h3 id="some-pitfalls-in-cert-requesting">Some pitfalls in cert requesting</h3>
 
@@ -319,9 +318,11 @@ recommend using acme.sh.</p>
 
 <h4 id="haproxy">HAProxy</h4>
 
-<p>Certain reverse proxies, such as HAProxy, will want your leaf certificate private key and certificate in 1 file. You
-might need to cat them together if using <code class="language-plaintext highlighter-rouge">acme.sh</code>. A reverse proxy may also hog port 80 and 443 which are needed to
-do the ACME challenge. Remember to carve out a path to your ACME client. I have something like this for HAProxy:</p>
+<p>Certain reverse proxies, such as HAProxy, will require the leaf private key and certificate in one file.  If this 
+is the case you will need to cat the key and cert together. A reverse proxy may also hog port 80 and 443 which are needed to
+do the ACME challenge, in which case you will need to carve out a path to the ACME client.</p>
+
+<p>Here is my setup for HAProxy - it’s my octoprint server:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># In /etc/haproxy/haproxy.cfg</span>
 frontend public
