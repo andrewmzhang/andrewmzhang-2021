@@ -21,6 +21,10 @@
 <lastmod>2021-06-18T00:00:00+00:00</lastmod>
 </url>
 <url>
+<loc>https://andrewmzhang.com/blog/2023/custom-tld/</loc>
+<lastmod>2023-05-17T00:00:00+00:00</lastmod>
+</url>
+<url>
 <loc>https://andrewmzhang.com/</loc>
 </url>
 <url>
@@ -45,6 +49,9 @@
 <loc>https://andrewmzhang.com/blog/tag/arduino-sim808/</loc>
 </url>
 <url>
+<loc>https://andrewmzhang.com/blog/tag/andywebservices/</loc>
+</url>
+<url>
 <loc>https://andrewmzhang.com/blog/category/tech/</loc>
 </url>
 <url>
@@ -52,5 +59,8 @@
 </url>
 <url>
 <loc>https://andrewmzhang.com/blog/2021/</loc>
+</url>
+<url>
+<loc>https://andrewmzhang.com/blog/2023/</loc>
 </url>
 </urlset>
