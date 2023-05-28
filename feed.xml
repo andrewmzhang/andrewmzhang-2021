@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://andrewmzhang.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewmzhang.com/" rel="alternate" type="text/html" hreflang="en" /><updated>2023-05-28T00:38:08+00:00</updated><id>https://andrewmzhang.com/feed.xml</id><title type="html">blank</title><subtitle>Personal site of Andrew Zhang
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://andrewmzhang.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewmzhang.com/" rel="alternate" type="text/html" hreflang="en" /><updated>2023-05-28T00:38:49+00:00</updated><id>https://andrewmzhang.com/feed.xml</id><title type="html">blank</title><subtitle>Personal site of Andrew Zhang
 </subtitle><entry><title type="html">Reverse Proxies With Custom ACME</title><link href="https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/" rel="alternate" type="text/html" title="Reverse Proxies With Custom ACME" /><published>2023-05-25T00:00:00+00:00</published><updated>2023-05-25T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme</id><content type="html" xml:base="https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/"><![CDATA[<h1 id="intro">Intro</h1>
 <p>This page assumes that you have some custom ACME server (see previous post) and you want a reverse proxy (eg Nginx, HaProxy) to use it to generate certs automatically.</p>
 
-<h1 id="swag---docker-swag">SWAG - <a href="https://github.com/linuxserver/docker-swag">docker-swag</a></h1>
+<h1 id="swag---docker-swag-official">SWAG - <a href="https://github.com/linuxserver/docker-swag">docker-swag official</a></h1>
 <h4 id="additional-links">Additional Links:</h4>
 <ol>
-  <li>Put dockerhub linnk here
-    <h2 id="explanation">Explanation</h2>
-    <p>At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature <a href="http://https://github.com/andrewmzhang/docker-swag">andrewmzhang/docker-swag</a>. It’s probably easier to see how the feature works by looking at the <a href="https://github.com/linuxserver/docker-swag/pull/371">diff</a>. This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore.</p>
-  </li>
+  <li>Dockerhub image: <a href="https://hub.docker.com/r/andywebservices/swag">andywebservices/swag</a></li>
 </ol>
 
-<p>Docker-swag is a complete solution. It’ll renew the certificates once a day and refresh Nginx servive to pickup the new certs.</p>
+<h2 id="explanation">Explanation</h2>
+<p>At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature <a href="http://https://github.com/andrewmzhang/docker-swag">andrewmzhang/docker-swag</a>. It’s probably easier to see how the feature works by looking at the <a href="https://github.com/linuxserver/docker-swag/pull/371">diff</a>. This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore.</p>
 
-<h1 id="haproxy---haproxy">HAProxy - <a href="https://github.com/haproxy/haproxy">haproxy</a></h1>
+<p>Docker-swag is a complete solution. It’ll renew the certificates once a day and refresh Nginx service to pick up the new certs.</p>
+
+<h1 id="haproxy--acmesh---haproxy">HAProxy + ACME.sh - <a href="https://github.com/haproxy/haproxy">haproxy</a></h1>
 <h2 id="issues">Issues</h2>
 <p>HAProxy suffers several issues.</p>
 <ol>

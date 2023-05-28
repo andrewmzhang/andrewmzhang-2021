@@ -143,19 +143,20 @@
       <h1 id="intro">Intro</h1>
 <p>This page assumes that you have some custom ACME server (see previous post) and you want a reverse proxy (eg Nginx, HaProxy) to use it to generate certs automatically.</p>
 
-<h1 id="swag---docker-swag">SWAG - <a href="https://github.com/linuxserver/docker-swag" rel="external nofollow noopener" target="_blank">docker-swag</a>
+<h1 id="swag---docker-swag-official">SWAG - <a href="https://github.com/linuxserver/docker-swag" rel="external nofollow noopener" target="_blank">docker-swag official</a>
 </h1>
 <h4 id="additional-links">Additional Links:</h4>
 <ol>
-  <li>Put dockerhub linnk here
-    <h2 id="explanation">Explanation</h2>
-    <p>At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature <a href="http://https://github.com/andrewmzhang/docker-swag" rel="external nofollow noopener" target="_blank">andrewmzhang/docker-swag</a>. It’s probably easier to see how the feature works by looking at the <a href="https://github.com/linuxserver/docker-swag/pull/371" rel="external nofollow noopener" target="_blank">diff</a>. This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore.</p>
-  </li>
+  <li>Dockerhub image: <a href="https://hub.docker.com/r/andywebservices/swag" rel="external nofollow noopener" target="_blank">andywebservices/swag</a>
+</li>
 </ol>
 
-<p>Docker-swag is a complete solution. It’ll renew the certificates once a day and refresh Nginx servive to pickup the new certs.</p>
+<h2 id="explanation">Explanation</h2>
+<p>At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature <a href="http://https://github.com/andrewmzhang/docker-swag" rel="external nofollow noopener" target="_blank">andrewmzhang/docker-swag</a>. It’s probably easier to see how the feature works by looking at the <a href="https://github.com/linuxserver/docker-swag/pull/371" rel="external nofollow noopener" target="_blank">diff</a>. This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore.</p>
 
-<h1 id="haproxy---haproxy">HAProxy - <a href="https://github.com/haproxy/haproxy" rel="external nofollow noopener" target="_blank">haproxy</a>
+<p>Docker-swag is a complete solution. It’ll renew the certificates once a day and refresh Nginx service to pick up the new certs.</p>
+
+<h1 id="haproxy--acmesh---haproxy">HAProxy + ACME.sh - <a href="https://github.com/haproxy/haproxy" rel="external nofollow noopener" target="_blank">haproxy</a>
 </h1>
 <h2 id="issues">Issues</h2>
 <p>HAProxy suffers several issues.</p>
