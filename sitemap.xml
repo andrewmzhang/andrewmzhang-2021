@@ -25,6 +25,10 @@
 <lastmod>2023-05-17T00:00:00+00:00</lastmod>
 </url>
 <url>
+<loc>https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/</loc>
+<lastmod>2023-05-25T00:00:00+00:00</lastmod>
+</url>
+<url>
 <loc>https://andrewmzhang.com/</loc>
 </url>
 <url>
@@ -56,6 +60,9 @@
 </url>
 <url>
 <loc>https://andrewmzhang.com/blog/tag/network/</loc>
+</url>
+<url>
+<loc>https://andrewmzhang.com/blog/tag/ssl/</loc>
 </url>
 <url>
 <loc>https://andrewmzhang.com/blog/category/tech/</loc>
