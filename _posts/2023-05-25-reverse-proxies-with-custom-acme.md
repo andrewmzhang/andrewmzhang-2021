@@ -10,15 +10,16 @@ author: Andrew M. Zhang
 # Intro
 This page assumes that you have some custom ACME server (see previous post) and you want a reverse proxy (eg Nginx, HaProxy) to use it to generate certs automatically. 
 
-# SWAG - [docker-swag](https://github.com/linuxserver/docker-swag)
+# SWAG - [docker-swag official](https://github.com/linuxserver/docker-swag)
 #### Additional Links:
-1. Put dockerhub linnk here
+1. Dockerhub image: [andywebservices/swag](https://hub.docker.com/r/andywebservices/swag)
+
 ## Explanation
 At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature [andrewmzhang/docker-swag](http://https://github.com/andrewmzhang/docker-swag). It's probably easier to see how the feature works by looking at the [diff](https://github.com/linuxserver/docker-swag/pull/371). This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore. 
 
-Docker-swag is a complete solution. It'll renew the certificates once a day and refresh Nginx servive to pickup the new certs.
+Docker-swag is a complete solution. It'll renew the certificates once a day and refresh Nginx service to pick up the new certs.
 
-# HAProxy - [haproxy](https://github.com/haproxy/haproxy)
+# HAProxy + ACME.sh - [haproxy](https://github.com/haproxy/haproxy)
 ## Issues
 HAProxy suffers several issues. 
 1. It cannot provision its own SSL certs, ie it cannot do the ACME dance
