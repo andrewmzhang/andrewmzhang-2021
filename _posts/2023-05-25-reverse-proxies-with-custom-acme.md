@@ -37,6 +37,7 @@ To fix part 2, we need to tell HAProxy to redirect AMCE dance over http to redir
 ```
 "/home/pi/.acme.sh"/acme.sh --cron --home "/home/pi/.acme.sh" --force --httpport 8888
 ```
+```
 frontend public
         bind :::80 v4v6
 
