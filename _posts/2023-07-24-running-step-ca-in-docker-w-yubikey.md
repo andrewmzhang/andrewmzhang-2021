@@ -1,4 +1,5 @@
 ---
+layout: post
 title: Running step-ca in docker w/ Yubikey
 tags: AndyWebServices Certificate Authority Yubikey smallstep step-ca 
 category: tech
