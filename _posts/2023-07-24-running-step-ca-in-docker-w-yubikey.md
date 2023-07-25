@@ -14,7 +14,7 @@ author: Andrew M. Zhang
 #### Abstract
 Carl Tashian of Smallstep wrote a blog post regarding [Building a Tiny Certificate Authority For Your Homelab](https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/). 
 This guide provides very complete instructions on how to install a step-ca certificate authority on a Raspberry Pi 4 
-and how to store the private keys securely on a Yubikey.
+and how to store the private keys securely on a Yubikey. This post is written assuming familiarity with this guide.
 
 The only problem is I like using Docker and I generally dislike running stuff on bare metal. Unfortunately, there are ß≤
 not any clear instructions on how to use the `smallstep/step-ca:hsm` image with a Raspberry Pi.
@@ -67,6 +67,8 @@ Run the following. Answer the prompts / set CLI variables the same way you answe
 docker pull smallstep/step-ca:hsm
 docker run -it -v /home/pi/docker/mnt/step/:/home/step smallstep/step-ca:hsm ca init --remote-management 
 ```
+
+This step is similar to the part in the guide where we run the init a 2nd time in order to create a skeleton.
 
 Go into `/home/pi/docker/mnt/step` and delete the contents of the `secrets` folder. Copy certs from the mounted usb
 to the `certs` folder. Copy config from the mounted usb to the `configs` folder.
