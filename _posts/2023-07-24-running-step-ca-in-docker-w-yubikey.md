@@ -27,11 +27,11 @@ Read the following to understand the parts of a PKI https://smallstep.com/blog/e
 The key issue with running this on a docker is that there's a bug in step-ca's dockerfile.hsm. See the final step
 for the fix
 
-# Requirements
+## Requirements
 * Yubikey
 * USB stick
 
-# Setup Root and Intermediate keys onto USB stick
+## Setup Root and Intermediate keys onto USB stick
 
 The goal is to have the root and intermediate keys on a USB stick. There are 2 ways to go about this.
 
@@ -39,6 +39,7 @@ The goal is to have the root and intermediate keys on a USB stick. There are 2 w
 partition so the keys aren't just sitting on a usb stick unencrypted. This guide contains a few simple commands to
 create a luks USB stick.https://github.com/drduh/YubiKey-Guide#backup
 2. You can also invoke something like this to generate the keys on the usb stick
+
 ```bash
 # modified from `Manual Installation` here https://hub.docker.com/r/smallstep/step-ca
 
@@ -49,16 +50,16 @@ docker run -it -v /mnt/secret_mount/:/home/step smallstep/step-ca:hsm ca init --
 # Follow the instructions that print to CLI
 ```
 
-# Load the keys onto the yubikey
+## Load the keys onto the yubikey
 
 Check the instructions in the Carl Tashian guide for how to import the keys onto the yubikey. 
 
-# Remove pcscd from the bare metal machine
+## Remove pcscd from the bare metal machine
 
 Uninstall the yubikey stuff after this step. The `pcscd` service will lock up the yubikey to the host meaning we can't pass it to
 the docker container.
 
-# Create a skeleton setup without secret keys
+## Create a skeleton setup without secret keys
 
 Run the following. Answer the prompts / set CLI variables the same way you answered them before
 ```bash
@@ -89,12 +90,12 @@ Edit defaults.json to use the fingerprints of our original certs (ie the first t
 
 A this point we're fully setup to run the cert auth
 
-# Random stuff
+## Random stuff
 
 Run step 4 from https://hub.docker.com/r/smallstep/step-ca because the container expects a password file. You can make the
 file empty. Not a big deal
 
-# Start step-ca and pass Yubikey
+## Start step-ca and pass Yubikey
 
 ***I'm hoping that this section becomes fixed in the future. Track the PR here: <insert PR here>***
 
