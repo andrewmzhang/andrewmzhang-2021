@@ -175,31 +175,31 @@
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"/home/pi/.acme.sh"/acme.sh --cron --home "/home/pi/.acme.sh" --force --httpport 8888
 </code></pre></div></div>
-<p>frontend public
-        bind :::80 v4v6</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>frontend public
+        bind :::80 v4v6
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Redirects AMCE challenges towards our other ACME program
-      acl letsencrypt-acl path_beg /.well-known/acme-challenge/
-    use_backend letsencrypt-backend if letsencrypt-acl
-   
-		  # Set the SSL certificate 
-    bind :::443 v4v6 ssl crt /home/pi/.acme.sh/octoprint.aws.pem
-    option forwardfor except 127.0.0.1
-    http-request redirect scheme https code 301 unless { ssl_fc }
-    use_backend webcam if { path_beg /webcam/ }
-    use_backend webcam_hls if { path_beg /hls/ }
-    use_backend webcam_hls if { path_beg /jpeg/ }
-    default_backend octoprint
-     
-    # Sets the amce backend to the 8888 port  backend letsencrypt-backend
-   server letsencrypt 127.0.0.1:8888
+        # Redirects AMCE challenges towards our other ACME program
+	      acl letsencrypt-acl path_beg /.well-known/acme-challenge/
+        use_backend letsencrypt-backend if letsencrypt-acl
+       
+			  # Set the SSL certificate 
+        bind :::443 v4v6 ssl crt /home/pi/.acme.sh/octoprint.aws.pem
+        option forwardfor except 127.0.0.1
+        http-request redirect scheme https code 301 unless { ssl_fc }
+        use_backend webcam if { path_beg /webcam/ }
+        use_backend webcam_hls if { path_beg /hls/ }
+        use_backend webcam_hls if { path_beg /jpeg/ }
+        default_backend octoprint
+         
+        # Sets the amce backend to the 8888 port 
+backend letsencrypt-backend
+       server letsencrypt 127.0.0.1:8888
+
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-To fix part 3, concatenate the key and the crt together after running `acme.sh` 
-```bash
-# This is the code that runs for my Octoprint rpi. 
-cat /home/pi/.acme.sh/octoprint.aws.key /home/pi/.acme.sh/octoprint.aws.crt &gt; /home/pi/.acme.sh/octoprint.aws.pem
+<p>To fix part 3, concatenate the key and the crt together after running <code class="language-plaintext highlighter-rouge">acme.sh</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># This is the code that runs for my Octoprint rpi. </span>
+<span class="nb">cat</span> /home/pi/.acme.sh/octoprint.aws.key /home/pi/.acme.sh/octoprint.aws.crt <span class="o">&gt;</span> /home/pi/.acme.sh/octoprint.aws.pem
 </code></pre></div></div>
 
 <p>To fix part 4, we need to send some commands to HAProxy to set a new SSL cert.</p>
@@ -289,7 +289,7 @@ echo "show ssl cert /home/pi/.acme.sh/octoprint.aws.pem" | socat tcp-connect:loc
     <footer class="fixed-bottom">
       <div class="container mt-0">
         © Copyright 2023 Andrew M. Zhang. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>.
-Last updated: May 28, 2023.
+Last updated: July 25, 2023.
       </div>
     </footer>
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://andrewmzhang.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewmzhang.com/" rel="alternate" type="text/html" hreflang="en" /><updated>2023-05-28T00:38:49+00:00</updated><id>https://andrewmzhang.com/feed.xml</id><title type="html">blank</title><subtitle>Personal site of Andrew Zhang
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://andrewmzhang.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewmzhang.com/" rel="alternate" type="text/html" hreflang="en" /><updated>2023-07-25T04:23:22+00:00</updated><id>https://andrewmzhang.com/feed.xml</id><title type="html">blank</title><subtitle>Personal site of Andrew Zhang
 </subtitle><entry><title type="html">Reverse Proxies With Custom ACME</title><link href="https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/" rel="alternate" type="text/html" title="Reverse Proxies With Custom ACME" /><published>2023-05-25T00:00:00+00:00</published><updated>2023-05-25T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme</id><content type="html" xml:base="https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/"><![CDATA[<h1 id="intro">Intro</h1>
 <p>This page assumes that you have some custom ACME server (see previous post) and you want a reverse proxy (eg Nginx, HaProxy) to use it to generate certs automatically.</p>
 
@@ -31,31 +31,31 @@
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"/home/pi/.acme.sh"/acme.sh --cron --home "/home/pi/.acme.sh" --force --httpport 8888
 </code></pre></div></div>
-<p>frontend public
-        bind :::80 v4v6</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>frontend public
+        bind :::80 v4v6
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    # Redirects AMCE challenges towards our other ACME program
-      acl letsencrypt-acl path_beg /.well-known/acme-challenge/
-    use_backend letsencrypt-backend if letsencrypt-acl
-   
-		  # Set the SSL certificate 
-    bind :::443 v4v6 ssl crt /home/pi/.acme.sh/octoprint.aws.pem
-    option forwardfor except 127.0.0.1
-    http-request redirect scheme https code 301 unless { ssl_fc }
-    use_backend webcam if { path_beg /webcam/ }
-    use_backend webcam_hls if { path_beg /hls/ }
-    use_backend webcam_hls if { path_beg /jpeg/ }
-    default_backend octoprint
-     
-    # Sets the amce backend to the 8888 port  backend letsencrypt-backend
-   server letsencrypt 127.0.0.1:8888
+        # Redirects AMCE challenges towards our other ACME program
+	      acl letsencrypt-acl path_beg /.well-known/acme-challenge/
+        use_backend letsencrypt-backend if letsencrypt-acl
+       
+			  # Set the SSL certificate 
+        bind :::443 v4v6 ssl crt /home/pi/.acme.sh/octoprint.aws.pem
+        option forwardfor except 127.0.0.1
+        http-request redirect scheme https code 301 unless { ssl_fc }
+        use_backend webcam if { path_beg /webcam/ }
+        use_backend webcam_hls if { path_beg /hls/ }
+        use_backend webcam_hls if { path_beg /jpeg/ }
+        default_backend octoprint
+         
+        # Sets the amce backend to the 8888 port 
+backend letsencrypt-backend
+       server letsencrypt 127.0.0.1:8888
+
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-To fix part 3, concatenate the key and the crt together after running `acme.sh` 
-```bash
-# This is the code that runs for my Octoprint rpi. 
-cat /home/pi/.acme.sh/octoprint.aws.key /home/pi/.acme.sh/octoprint.aws.crt &gt; /home/pi/.acme.sh/octoprint.aws.pem
+<p>To fix part 3, concatenate the key and the crt together after running <code class="language-plaintext highlighter-rouge">acme.sh</code></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># This is the code that runs for my Octoprint rpi. </span>
+<span class="nb">cat</span> /home/pi/.acme.sh/octoprint.aws.key /home/pi/.acme.sh/octoprint.aws.crt <span class="o">&gt;</span> /home/pi/.acme.sh/octoprint.aws.pem
 </code></pre></div></div>
 
 <p>To fix part 4, we need to send some commands to HAProxy to set a new SSL cert.</p>
@@ -391,7 +391,12 @@ a file, edit your crontab to run it. Also maybe edit out the octoprint stuff:</p
 
 <p>I’m not sure when RDY gets sent. When I had the shield serial connected to board serial default (0,1), I never got the RDY response from the shield and setting the baud rate into non-volatile memory (AT?? command) never held across reboot. You only get the RDY if the baud is set according to the docs. Thus in the default library with the default serial comms, the sim808 gets stuck on init waiting on RDY</p>
 
-<p>Another issue is that if the GPS fix fails (not enough satellites to perform trilateration), you cannot get any data from NMEA streams that are available; current time, number of GPS in view, etc. I have fixed this (insert github line link here)</p>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech" /><category term="GPS" /><category term="SIM808" /><category term="DFRobot" /><category term="arduino" /><category term="arduino-sim808" /><summary type="html"><![CDATA[playing around with the DFRobot SIM808 shield and some SIM808 libraries...]]></summary></entry><entry><title type="html">Mosh + Tmux + Copy Paste</title><link href="https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425/" rel="alternate" type="text/html" title="Mosh + Tmux + Copy Paste" /><published>2020-02-06T02:01:00+00:00</published><updated>2020-02-06T02:01:00+00:00</updated><id>https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425</id><content type="html" xml:base="https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425/"><![CDATA[<p>The overarching goal is to set up what I believe to be the ideal remote development terminal setup; mosh into remote -&gt; tmux + ability to copy paste to local machine.</p>
+<p>Another issue is that if the GPS fix fails (not enough satellites to perform trilateration), you cannot get any data from NMEA streams that are available; current time, number of GPS in view, etc. I have fixed this (insert github line link here)</p>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech" /><category term="GPS" /><category term="SIM808" /><category term="DFRobot" /><category term="arduino" /><category term="arduino-sim808" /><summary type="html"><![CDATA[playing around with the DFRobot SIM808 shield and some SIM808 libraries...]]></summary></entry><entry><title type="html">Mosh + Tmux + Copy Paste</title><link href="https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425/" rel="alternate" type="text/html" title="Mosh + Tmux + Copy Paste" /><published>2020-02-06T02:01:00+00:00</published><updated>2020-02-06T02:01:00+00:00</updated><id>https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425</id><content type="html" xml:base="https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425/"><![CDATA[<h1 id="outdated">OUTDATED</h1>
+
+<h4 id="this-guide-is-outdated-im-keeping-this-up-for-my-own-records-the-updated-guide-to-setting-this-up-will-be-placed">This guide is outdated. I’m keeping this up for my own records. The updated guide to setting this up will be placed</h4>
+<h4 id="here-when-ready-link">here when ready &lt;link&gt;</h4>
+
+<p>The overarching goal is to set up what I believe to be the ideal remote development terminal setup; mosh into remote -&gt; tmux + ability to copy paste to local machine.</p>
 
 <h3 id="background">Background</h3>
 
