@@ -96,7 +96,7 @@ file empty. Not a big deal
 
 # Start step-ca and pass Yubikey
 
-****I'm hoping that this section becomes fixed in the future. Track the PR here: <insert PR here>****
+***I'm hoping that this section becomes fixed in the future. Track the PR here: <insert PR here>***
 
 Clone the repo `github.com/smallstep/certificates.git`. Copy docker/Dockerfile.hsm to repo root.
 
