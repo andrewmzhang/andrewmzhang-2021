@@ -8,6 +8,8 @@ author: Andrew M. Zhang
 
 ---
 
+***Note: I don't have an extra yubikey+rpi, so I can't really verify these instructions and am relying on memory***
+
 #### Abstract
 Carl Tashian of Smallstep wrote a blog post regarding [Building a Tiny Certificate Authority For Your Homelab](https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/). 
 This guide provides very complete instructions on how to install a step-ca certificate authority on a Raspberry Pi 4 
@@ -17,9 +19,12 @@ The only problem is I like using Docker and I generally dislike running stuff on
 not any clear instructions on how to use the `smallstep/step-ca:hsm` image with a Raspberry Pi.
 
 I recommend trying to set up what's in the guide, so you have a general idea of how the file structure works. I'm going
-to document approximately how I setup step-ca
+to document approximately how I setup step-ca.
 
 Read the following to understand the parts of a PKI https://smallstep.com/blog/everything-pki/
+
+The key issue with running this on a docker is that there's a bug in step-ca's dockerfile.hsm. See the final step
+for the fix
 
 # Requirements
 * Yubikey
