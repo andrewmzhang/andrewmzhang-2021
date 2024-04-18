@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <!-- Head -->
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    <!-- Metadata, OpenGraph and Schema.org -->
+    
+
+    <!-- Standard metadata -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Running step-ca in docker w/ Yubikey | Andrew M. Zhang</title>
+    <meta name="author" content="Andrew M. Zhang">
+    <meta name="description" content="How to run step-ca in docker while storing private keys on Yubikey">
+    <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website">
+
+
+    <!-- Bootstrap & MDB -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-DF7Zhf293AJxJNTmh5zhoYYIMs2oXitRfBjY+9L//AY=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous">
+
+    <!-- Bootstrap Table -->
+    <link defer rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.css">
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha256-i1+4qU2G2860dGGIOJscdC30s9beBXjFfzjWLjBRsBg=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons">
+
+    <!-- Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/github.css" media="" id="highlight_theme_light">
+
+    
+
+    <!-- Styles -->
+    
+    <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%E2%9A%9B%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;">
+    
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="canonical" href="https://andrewmzhang.com/blog/2023/running-step-ca-in-docker-w-yubikey/">
+
+    <!-- Dark Mode -->
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/native.css" media="none" id="highlight_theme_dark">
+
+    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/dark_mode.js"></script>
+    
+
+  </head>
+
+  <!-- Body -->
+  <body class="fixed-top-nav ">
+
+    <!-- Header -->
+    <header>
+
+      <!-- Nav Bar -->
+      <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top">
+        <div class="container">
+          <a class="navbar-brand title font-weight-lighter" href="/"><span class="font-weight-bold">Andrew </span>M. Zhang</a>
+          <!-- Navbar Toggle -->
+          <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar top-bar"></span>
+            <span class="icon-bar middle-bar"></span>
+            <span class="icon-bar bottom-bar"></span>
+          </button>
+
+          <div class="collapse navbar-collapse text-right" id="navbarNav">
+            <ul class="navbar-nav ml-auto flex-nowrap">
+
+              <!-- About -->
+              <li class="nav-item ">
+                <a class="nav-link" href="/">about</a>
+              </li>
+              
+              <!-- Blog -->
+              <li class="nav-item active">
+                <a class="nav-link" href="/blog/">AndyTechTips<span class="sr-only">(current)</span></a>
+              </li>
+
+              <!-- Other pages -->
+              <li class="nav-item ">
+                <a class="nav-link" href="/publications/">publications</a>
+              </li>
+
+              <!-- Toogle theme mode -->
+              <li class="toggle-container">
+                <button id="light-toggle" title="Change theme">
+                  <i class="fas fa-moon"></i>
+                  <i class="fas fa-sun"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Scrolling Progress Bar -->
+      <progress id="progress" value="0">
+        <div class="progress-container">
+          <span class="progress-bar"></span>
+        </div>
+      </progress>
+    </header>
+
+
+    <!-- Content -->
+    <div class="container mt-5">
+      
+        <!-- _layouts/post.html -->
+
+<div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Running step-ca in docker w/ Yubikey</h1>
+    <p class="post-meta">July 24, 2023• Andrew M. Zhang</p>
+    <p class="post-tags">
+      <a href="/blog/2023"> <i class="fas fa-calendar fa-sm"></i> 2023 </a>
+        ·  
+        <a href="/blog/tag/andywebservices">
+          <i class="fas fa-hashtag fa-sm"></i> AndyWebServices</a>  
+          <a href="/blog/tag/certificate">
+          <i class="fas fa-hashtag fa-sm"></i> Certificate</a>  
+          <a href="/blog/tag/authority">
+          <i class="fas fa-hashtag fa-sm"></i> Authority</a>  
+          <a href="/blog/tag/yubikey">
+          <i class="fas fa-hashtag fa-sm"></i> Yubikey</a>  
+          <a href="/blog/tag/smallstep">
+          <i class="fas fa-hashtag fa-sm"></i> smallstep</a>  
+          <a href="/blog/tag/step-ca">
+          <i class="fas fa-hashtag fa-sm"></i> step-ca</a>  
+          
+        ·  
+        <a href="/blog/category/tech">
+          <i class="fas fa-tag fa-sm"></i> tech</a>  
+          
+
+    </p>
+  </header>
+
+  <article class="post-content">
+    
+    <div id="markdown-content">
+      <h4 id="abstract">Abstract</h4>
+
+<p>Carl Tashian of Smallstep wrote a blog post regarding <a href="https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/" rel="external nofollow noopener" target="_blank">Building a Tiny Certificate Authority For Your Homelab</a>. 
+This guide provides very complete instructions on how to install a step-ca certificate authority on a Raspberry Pi 4 
+and how to store the private keys securely on a Yubikey. This post is written assuming familiarity with this guide.
+Namely, be familiar with the process of running the <code class="language-plaintext highlighter-rouge">step ca init</code> twice, once to setup the private keys off-host (ie usb)
+, then again to setup the directory structure. Certs must then be copied from the off-host device to the directory 
+structure. Private keys on the off-host device are loaded into a Yubikey.</p>
+
+<p>The only problem is I like using Docker and I generally dislike running stuff on bare metal. Unfortunately, there are
+not any clear instructions on how to use the <code class="language-plaintext highlighter-rouge">smallstep/step-ca:hsm</code> image with a Raspberry Pi with a Yubikey. My guide 
+will roughly follow the same steps except using docker.</p>
+
+<p><strong><em>NOTE</em></strong> There is currently a bug in step-ca’s <code class="language-plaintext highlighter-rouge">dockerfile.hsm</code>. See the final step of the guide for a quick fix.</p>
+
+<p>Read the following to understand the parts of a PKI https://smallstep.com/blog/everything-pki/</p>
+
+<h2 id="requirements">Requirements</h2>
+<ul>
+  <li>Rpi</li>
+  <li>Yubikey</li>
+  <li>USB stick</li>
+</ul>
+
+<h2 id="setup-rpi">Setup Rpi</h2>
+
+<p>I tried this using both Ubuntu and Raspbian on Rpi. I think it’ll work on any Rpi OS that supports Docker. Do whatever
+you need to do to install Docker.</p>
+
+<h2 id="setup-root-and-intermediate-keys-onto-usb-stick">Setup Root and Intermediate keys onto USB stick</h2>
+
+<p>The goal is to have the root and intermediate keys on a USB stick, just like in Carl’s guide. Though, I recommend
+using a LUKS encrypted USB stick to hold the keys. You can steal the commands for setting that up here: https://github.com/drduh/YubiKey-Guide#backup</p>
+
+<p>For the remainder of the guide I’ll assume your usb, encrypted or otherwise, is mounted here <code class="language-plaintext highlighter-rouge">/mnt/usb/</code></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># modified from `Manual Installation` here https://hub.docker.com/r/smallstep/step-ca</span>
+
+docker pull smallstep/step-ca:hsm
+
+<span class="c"># Fill out the prompts with your own answers</span>
+docker run <span class="nt">-it</span> <span class="nt">-v</span> /home/pi/docker/data/step:/home/step andywebservices/step-ca:hsm step ca init <span class="nt">--name</span><span class="o">=</span><span class="s2">"AndyWebServices CA"</span><span class="se">\</span>
+ <span class="nt">--dns</span><span class="o">=</span><span class="s2">"awsca.aws,172.19.0.100"</span> <span class="nt">--address</span><span class="o">=</span><span class="s2">":443"</span> <span class="nt">--provisioner</span><span class="o">=</span><span class="s2">"admin@andywebservices.com"</span> <span class="nt">--deployment-type</span> standalone <span class="se">\</span>
+ <span class="nt">--remote-management</span> <span class="nt">--acme</span> <span class="nt">--admin-name</span> admin@andywebservices.com
+there is no ca.json config file<span class="p">;</span> please run step ca init, or provide config parameters via DOCKER_STEPCA_INIT_ vars
+✔ Deployment Type: Standalone                                                   <span class="c"># Select Standalone</span>
+What would you like to name your new PKI?
+✔ <span class="o">(</span>e.g. Smallstep<span class="o">)</span>: TinyCA                                                      <span class="c"># Give it a name. This will appear in yoru certs</span>
+What DNS names or IP addresses will clients use to reach your CA?               
+✔ <span class="o">(</span>e.g. ca.example.com[,10.1.2.3,etc.]<span class="o">)</span>: ca.internal,192.168.0.101,10.10.10.10  <span class="c"># You can list a bunch of these. Values can be adjusted layer in /mnt/usb/config/ca.json</span>
+What IP and port will your new CA <span class="nb">bind </span>to? <span class="o">(</span>:443 will <span class="nb">bind </span>to 0.0.0.0:443<span class="o">)</span>      
+✔ <span class="o">(</span>e.g. :443 or 127.0.0.1:443<span class="o">)</span>: :443                                            <span class="c"># You probably want :443</span>
+✔ <span class="o">(</span>e.g. you@smallstep.com<span class="o">)</span>: email@example.com                                   <span class="c"># Your email</span>
+Choose a password <span class="k">for </span>your CA keys and first provisioner.
+✔ <span class="o">[</span>leave empty and we<span class="s1">'ll generate one]:
+✔ Password: my.password.is.unique                                               # Pick a sensible password
+
+Generating root certificate... done!
+Generating intermediate certificate... done!
+
+✔ Root certificate: /home/step/certs/root_ca.crt
+✔ Root private key: /home/step/secrets/root_ca_key
+✔ Root fingerprint: 0d134a66060ff7540f3cd304c81d354ded26d4b57d4d33f5b445ad555b7c0335
+✔ Intermediate certificate: /home/step/certs/intermediate_ca.crt
+✔ Intermediate private key: /home/step/secrets/intermediate_ca_key
+badger 2023/07/26 06:04:17 INFO: All 0 tables opened in 0s
+✔ Database folder: /home/step/db
+✔ Default configuration: /home/step/config/defaults.json
+✔ Certificate Authority configuration: /home/step/config/ca.json
+✔ Admin provisioner: email@example.com (JWK)
+✔ Super admin subject: step
+
+Your PKI is ready to go. To generate certificates for individual services see '</span>step <span class="nb">help </span>ca<span class="s1">'.
+
+FEEDBACK 😍 🍻
+  The step utility is not instrumented for usage statistics. It does not phone
+  home. But your feedback is extremely valuable. Any information you can provide
+  regarding how you’re using `step` helps. Please send us a sentence or two,
+  good or bad at feedback@smallstep.com or join GitHub Discussions
+  https://github.com/smallstep/certificates/discussions and our Discord
+  https://u.step.sm/discord.
+</span></code></pre></div></div>
+
+<h3 id="optional-set-up-name-contraints">Optional: Set up name contraints</h3>
+
+<p>Follow the instructions here to setup up name constraints if you’re going to set it up for the root cert. This is probably
+good practice. If you don’t use name constraints and your CA is hijacked, then it can issue certs for any domains (ie google.com). 
+Usually name constraints are set on the intermediate cert but for custom TLDs and internal stuff, constraining the
+root cert is acceptable and is the only way to show clients that you’re not going to sign for stuff you don’t own (ie google.com).</p>
+
+<p>I use an internal TLD. You should set the permitted domains to also include the one you use for emails or else I think
+you could get issues. Ie I setup my name constraints to sign <code class="language-plaintext highlighter-rouge">.customtld</code>, <code class="language-plaintext highlighter-rouge">mydomain.com</code> (I own this), and <code class="language-plaintext highlighter-rouge">.mydomain.com</code></p>
+
+<h2 id="load-the-keys-onto-the-yubikey">Load the keys onto the yubikey</h2>
+
+<p>Check the instructions in the Carl Tashian guide for how to import the keys onto the yubikey. You might need to install
+<code class="language-plaintext highlighter-rouge">yubikey-manager</code> (ie ykman) and <code class="language-plaintext highlighter-rouge">pcscd</code></p>
+
+<p>https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/#import-the-ca-into-the-yubikey</p>
+
+<h2 id="remove-pcscd-from-the-bare-metal-machine-other-cleanup">Remove pcscd from the bare metal machine. Other cleanup</h2>
+
+<p>Uninstall the yubikey stuff after this step. The <code class="language-plaintext highlighter-rouge">pcscd</code> service on the host machine will lock up the yubikey to the 
+host meaning we can’t pass it to the docker container.</p>
+
+<p>Unmount the encrypted drive. You don’t need it anymore</p>
+
+<h2 id="create-a-skeleton-setup-without-secret-keys">Create a skeleton setup without secret keys</h2>
+
+<p>I’m going to assume that the docker mount for your step-ca server will be under <code class="language-plaintext highlighter-rouge">/home/pi/docker/mnt/step</code></p>
+
+<p>Run the following. Answer the prompts / set CLI variables the same way you answered them before</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># modified from `Manual Installation` here https://hub.docker.com/r/smallstep/step-ca</span>
+docker pull smallstep/step-ca:hsm
+docker run <span class="nt">-it</span> <span class="nt">-v</span> /home/pi/docker/mnt/step/:/home/step smallstep/step-ca:hsm step ca init <span class="nt">--remote-management</span>
+<span class="c"># Follow the prompt the same way you filled out before</span>
+
+<span class="c"># Delete the secret keys from the skeleton. Copy the configs and certs. Do NOT copy the secret keys. These are on the Yubikey</span>
+<span class="nb">rm</span> <span class="nt">-rf</span> /home/pi/docker/mnt/secrets/<span class="k">*</span>
+<span class="nb">cp</span> /mnt/usb/config/<span class="k">*</span> /home/pi/docker/mnt/step/config/
+<span class="nb">cp</span> /mnt/usb/certs/<span class="k">*</span> /home/pi/docker/mnt/step/certs/
+</code></pre></div></div>
+
+<p>Edit the file in <code class="language-plaintext highlighter-rouge">config/ca.json</code> to read something like. Edit values where appropriate</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+        </span><span class="nl">"root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/pi/docker/mnt/step/certs/root_ca.crt"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"federatedRoots"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+        </span><span class="nl">"crt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/pi/docker/mnt/step/certs/intermediate_ca.crt"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"yubikey:slot-id=9c"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"kms"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"yubikey"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"pin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">":443"</span><span class="w">
+</span><span class="err">//</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>At this point, we’re fully setup to run the cert auth</p>
+
+<h2 id="random-stuff">Random stuff</h2>
+
+<p>You need a password file. It’s just a thing the docker entrypoint for <code class="language-plaintext highlighter-rouge">step-ca</code> expects.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">touch</span> /home/pi/docker/mnt/step/secrets/password
+</code></pre></div></div>
+
+<h2 id="start-step-ca-and-pass-yubikey">Start step-ca and pass Yubikey</h2>
+
+<p>***I’m hoping that this section becomes fixed in the future. Track the PR here: <insert pr="" here="">***</insert></p>
+
+<p>Clone the repo <code class="language-plaintext highlighter-rouge">github.com/smallstep/certificates.git</code>. Copy <code class="language-plaintext highlighter-rouge">docker/Dockerfile.hsm</code> to repo root.</p>
+
+<p>So there’s a bug as of the writing of this guide 07/25/23. The issue is that the user <code class="language-plaintext highlighter-rouge">step</code> in the container doesn’t
+have adequate permission to run pcscd service. Thus you’re going to need to include these 3 lines in the Dockerfile</p>
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Change the first line to use golang:bullseye. Otherwise it might not build right on your RPI due to GLibC versioning issues</span>
+<span class="c"># If we're building on the rpi, this ensures we have the right glibc version.</span>
+<span class="c"># You may need to adjust as raspbian moves to newer versions</span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">golang:bullseye</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder  </span>
+
+<span class="c"># Insert this after `RUN chown step:step /run/pcscd` but before `USER step`</span>
+<span class="k">RUN </span>groupadd pcscd          <span class="c"># Create the pcscd group</span>
+<span class="k">RUN </span>usermod <span class="nt">-aG</span> pcscd step  <span class="c"># Adds the user step to pcscd group</span>
+</code></pre></div></div>
+
+<p>Then build this image and launch</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Execute the following from repo root
+docker build --no-cache -t some-catchy-name:hsm . # build docker image
+
+# You can figure out the bus and usb id via `lsusb` command. This does tend to change when you unplug and replug. You can
+# maybe use udevadm to set up a symlink. See the Carl Tashian guide for that setup. I think passing the --privileged 
+# flag will let the contianer access all devices
+docker run -d -p 443:443 -v /home/pi/docker/mnt/step:/home/step --device /dev/bus/usb/001/008:/dev/bus/usb/001/008 some-catchy-name:hsm
+</code></pre></div></div>
+
+<h2 id="messing-with-the-udev-rules">Messing with the udev rules</h2>
+
+<p>The above <em>should</em> work, but if it doesn’t, try running the container as root user with the option <code class="language-plaintext highlighter-rouge">-u 0</code></p>
+
+<p>I got mine to work with the <code class="language-plaintext highlighter-rouge">step</code> user (in the container) by setting these udev rules in the host. I’m not a udev expert
+but I think these changes let <code class="language-plaintext highlighter-rouge">pcscd</code> work correctly in the container without the <code class="language-plaintext highlighter-rouge">-u 0</code> option.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># IN file /etc/udev/rules.d/75-yubikey.rules
+ACTION=="add", SUBSYSTEM=="usb", ENV{PRODUCT}=="1050/406/*", TAG+="systemd", SYMLINK+="yubikey", GROUP="pcscd", MODE="0666", RUN+="/bin/chgrp pcscd $root/$parent"
+ACTION=="remove", SUBSYSTEM=="usb", ENV{PRODUCT}=="1050/406/*", TAG+="systemd"
+</code></pre></div></div>
+
+<h2 id="my-image">My image</h2>
+
+<p>You can get a copy of my rpi step-ca image via <code class="language-plaintext highlighter-rouge">docker pull andywebservices/step-ca:hsm</code>.</p>
+
+
+    </div>
+  </article>
+
+
+  
+    
+    <br>
+    <hr>
+    <br>
+    <ul class="list-disc pl-8"></ul>
+
+    <!-- Adds related posts to the end of an article -->
+    <h2 class="text-3xl font-semibold mb-4 mt-12">Enjoy Reading This Article?</h2>
+    <p class="mb-2">Here are some more articles you might like to read next:</p>
+  
+
+  <li class="my-2">
+    <a class="text-pink-700 underline font-semibold hover:text-pink-800" href="/blog/2023/reverse-proxies-with-custom-acme/">Reverse Proxies With Custom ACME</a>
+  </li>
+
+  
+
+  <li class="my-2">
+    <a class="text-pink-700 underline font-semibold hover:text-pink-800" href="/blog/2023/custom-tld/">Custom TLD Over Tailscale</a>
+  </li>
+
+  
+
+  <li class="my-2">
+    <a class="text-pink-700 underline font-semibold hover:text-pink-800" href="/blog/2021/arduino-gps-notes/">Notes on Arduino GPS Library</a>
+  </li>
+
+  
+
+  <li class="my-2">
+    <a class="text-pink-700 underline font-semibold hover:text-pink-800" href="/blog/2020/osc-52-patch-for-vte-0425/">Mosh + Tmux + Copy Paste</a>
+  </li>
+
+<div id="giscus_thread" style="max-width: 1200px; margin: 0 auto;">
+  <script>
+    let giscusTheme = localStorage.getItem("theme");
+    let giscusAttributes = {
+        "src": "https://giscus.app/client.js",
+        "data-repo": "andrewmzhang/andrewmzhang-2021",
+        "data-repo-id": "MDEwOlJlcG9zaXRvcnkzMzExNjA1NTM=",
+        "data-category": "Comments",
+        "data-category-id": "DIC_kwDOE70b6c4CWnht",
+        "data-mapping": "title",
+        "data-strict": "1",
+        "data-reactions-enabled": "1",
+        "data-emit-metadata": "0",
+        "data-input-position": "bottom",
+        "data-theme": giscusTheme,
+        "data-lang": "en",
+        "crossorigin": "anonymous",
+        "async": "",
+    };
+
+
+    let giscusScript = document.createElement("script");
+    Object.entries(giscusAttributes).forEach(([key, value]) => giscusScript.setAttribute(key, value));
+    document.getElementById("giscus_thread").appendChild(giscusScript);
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://giscus.app/?ref_noscript" rel="external nofollow noopener" target="_blank">comments powered by giscus.</a>
+</noscript>
+</div>
+</div>
+
+      
+    </div>
+
+    <!-- Footer -->    
+    <footer class="fixed-bottom">
+      <div class="container mt-0">
+        © Copyright 2024 Andrew M. Zhang. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>.
+Last updated: April 18, 2024.
+      </div>
+    </footer>
+
+    <!-- JavaScripts -->
+    <!-- jQuery -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <!-- Bootsrap & MDB scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha256-fgLAgv7fyCGopR/gBNq2iW3ZKIdqIcyshnUULC4vex8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
+
+    <!-- Masonry & imagesLoaded -->
+  <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+  <script defer src="/assets/js/masonry.js" type="text/javascript"></script>
+    
+  <!-- Medium Zoom JS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.8/dist/medium-zoom.min.js" integrity="sha256-7PhEpEWEW0XXQ0k6kQrPKwuoIomz8R8IYyuU1Qew4P8=" crossorigin="anonymous"></script>
+  <script defer src="/assets/js/zoom.js"></script>
+
+  <!-- Bootstrap Table -->
+  <script defer src="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.js"></script>
+
+  <!-- Load Common JS -->
+  <script src="/assets/js/no_defer.js"></script>
+  <script defer src="/assets/js/common.js"></script>
+  <script defer src="/assets/js/copy_code.js" type="text/javascript"></script>
+
+    
+  <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script>
+  <script async src="https://badge.dimensions.ai/badge.js"></script>
+
+    <!-- MathJax -->
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        tags: 'ams'
+      }
+    };
+  </script>
+  <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script>
+  <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+    
+    
+
+<!-- Scrolling Progress Bar -->
+<script type="text/javascript">
+  /*
+   * This JavaScript code has been adapted from the article 
+   * https://css-tricks.com/reading-position-indicator/ authored by Pankaj Parashar, 
+   * published on the website https://css-tricks.com on the 7th of May, 2014.
+   * Couple of changes were made to the original code to make it compatible 
+   * with the `al-foio` theme.
+   */
+  const progressBar = $("#progress");
+  /*
+   * We set up the bar after all elements are done loading.
+   * In some cases, if the images in the page are larger than the intended
+   * size they'll have on the page, they'll be resized via CSS to accomodate
+   * the desired size. This mistake, however, breaks the computations as the
+   * scroll size is computed as soon as the elements finish loading.
+   * To account for this, a minimal delay was introduced before computing the
+   * values.
+   */
+  window.onload = function () {
+    setTimeout(progressBarSetup, 50);
+  };
+  /*
+   * We set up the bar according to the browser.
+   * If the browser supports the progress element we use that.
+   * Otherwise, we resize the bar thru CSS styling
+   */
+  function progressBarSetup() {
+    if ("max" in document.createElement("progress")) {
+      initializeProgressElement();
+      $(document).on("scroll", function() {
+        progressBar.attr({ value: getCurrentScrollPosition() });
+      });
+      $(window).on("resize", initializeProgressElement);
+    } else {
+      resizeProgressBar();
+      $(document).on("scroll", resizeProgressBar);
+      $(window).on("resize", resizeProgressBar);
+    }
+  }
+  /*
+   * The vertical scroll position is the same as the number of pixels that
+   * are hidden from view above the scrollable area. Thus, a value > 0 is
+   * how much the user has scrolled from the top
+   */
+  function getCurrentScrollPosition() {
+    return $(window).scrollTop();
+  }
+
+  function initializeProgressElement() {
+    let navbarHeight = $("#navbar").outerHeight(true);
+    $("body").css({ "padding-top": navbarHeight });
+    $("progress-container").css({ "padding-top": navbarHeight });
+    progressBar.css({ top: navbarHeight });
+    progressBar.attr({
+      max: getDistanceToScroll(),
+      value: getCurrentScrollPosition(),
+    });
+  }
+  /*
+   * The offset between the html document height and the browser viewport
+   * height will be greater than zero if vertical scroll is possible.
+   * This is the distance the user can scroll
+   */
+  function getDistanceToScroll() {
+    return $(document).height() - $(window).height();
+  }
+
+  function resizeProgressBar() {
+    progressBar.css({ width: getWidthPercentage() + "%" });
+  }
+  // The scroll ratio equals the percentage to resize the bar
+  function getWidthPercentage() {
+    return (getCurrentScrollPosition() / getDistanceToScroll()) * 100;
+  }
+</script>
+
+  </body>
+</html>
