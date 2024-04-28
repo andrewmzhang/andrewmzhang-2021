@@ -159,6 +159,8 @@
 <h1 id="haproxy--acmesh---haproxy">HAProxy + ACME.sh - <a href="https://github.com/haproxy/haproxy" rel="external nofollow noopener" target="_blank">haproxy</a>
 </h1>
 <h2 id="issues">Issues</h2>
+<p><strong>EDIT: This section was updated on 2024-04-17. The previous instructions were out of date</strong></p>
+
 <p>HAProxy suffers several issues.</p>
 <ol>
   <li>It cannot provision its own SSL certs, ie it cannot do the ACME dance</li>
@@ -167,58 +169,34 @@
   <li>It cannot tell if the SSL cert has changed on disk, thus users need to send commands to get HAProxy to refresh the certs</li>
 </ol>
 
-<p>To fix part 1, we use <code class="language-plaintext highlighter-rouge">acme.sh</code>.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Runs the acme.sh program on port 8888. 
-"/home/pi/.acme.sh"/acme.sh --cron --home "/home/pi/.acme.sh" --force --httpport 8888
-</code></pre></div></div>
-<p>To fix part 2, we need to tell HAProxy to redirect AMCE dance over http to redirect to <code class="language-plaintext highlighter-rouge">acme.sh</code></p>
+<p>Fortunately, <code class="language-plaintext highlighter-rouge">acme.sh</code> has some helpers that make this procedure relatively painless</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Register an account thumbprint. This will produce a thumbprint. Copy that value</span>
+./acme.sh <span class="nt">--register-account</span> <span class="nt">--server</span> https://step-ca.internal/acme/acme/directory <span class="nt">-m</span> myemail@example.com
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"/home/pi/.acme.sh"/acme.sh --cron --home "/home/pi/.acme.sh" --force --httpport 8888
-</code></pre></div></div>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>frontend public
-        bind :::80 v4v6
+<span class="c"># Edit the following into /etc/haproxy/haproxy.cfg</span>
+global
+        <span class="o">[</span>...]
+        stats socket /var/run/haproxy/admin.sock level admin mode 660    <span class="c"># This command lets ./acme.sh communicate to HAProxy to reload SSL certs</span>
+        setenv ACCOUNT_THUMBPRINT <span class="s1">'THE VALUE COPIED FROM THE PREVIOUS COMMAND'</span>
 
-        # Redirects AMCE challenges towards our other ACME program
-	      acl letsencrypt-acl path_beg /.well-known/acme-challenge/
-        use_backend letsencrypt-backend if letsencrypt-acl
-       
-			  # Set the SSL certificate 
-        bind :::443 v4v6 ssl crt /home/pi/.acme.sh/octoprint.aws.pem
-        option forwardfor except 127.0.0.1
-        http-request redirect scheme https code 301 unless { ssl_fc }
-        use_backend webcam if { path_beg /webcam/ }
-        use_backend webcam_hls if { path_beg /hls/ }
-        use_backend webcam_hls if { path_beg /jpeg/ }
-        default_backend octoprint
-         
-        # Sets the amce backend to the 8888 port 
-backend letsencrypt-backend
-       server letsencrypt 127.0.0.1:8888
+frontend public
+        <span class="nb">bind</span> :::80 v4v6
+        <span class="nb">bind</span> :::443 v4v6 ssl crt /etc/haproxy/certs/ strict-sni  <span class="c"># This allows haproxy to boot without certs, which you wont have initially</span>
+        <span class="c"># The directive below means when the certificate authority navigates to my.domain.internal/.well-known/acme-challenge/ HAProxy will reply with the account thumbprint </span>
+        http-request <span class="k">return </span>status 200 content-type text/plain lf-string <span class="s2">"%[path,field(-1,/)].</span><span class="k">${</span><span class="nv">ACCOUNT_THUMBPRINT</span><span class="k">}</span><span class="se">\n</span><span class="s2">"</span> <span class="k">if</span> <span class="o">{</span> path_beg <span class="s1">'/.well-known/acme-challenge/'</span> <span class="o">}</span>
 
+<span class="c"># Do the ACME dance, ACME will write some config files under ~/.acme.sh/mydomain.internal_ecc. Note the deploy-hook and --days 1</span>
+./acme.sh <span class="nt">--stateless</span> <span class="nt">--issue</span> <span class="nt">-d</span> my.domain.internal <span class="nt">--server</span> https://step-ca.internal/acme/acme/directory <span class="nt">--ca-bundle</span> ~/my_root_ca.crt <span class="nt">--deploy</span> <span class="nt">--deploy-hook</span> haproxy <span class="nt">--days</span> 1
+<span class="c"># Remember to update cron</span>
+./acme.sh <span class="nt">--install-cronjob</span>
 </code></pre></div></div>
 
-<p>To fix part 3, concatenate the key and the crt together after running <code class="language-plaintext highlighter-rouge">acme.sh</code></p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># This is the code that runs for my Octoprint rpi. </span>
-<span class="nb">cat</span> /home/pi/.acme.sh/octoprint.aws.key /home/pi/.acme.sh/octoprint.aws.crt <span class="o">&gt;</span> /home/pi/.acme.sh/octoprint.aws.pem
-</code></pre></div></div>
+<p>Remember to check the .acme.sh config files, namely the <code class="language-plaintext highlighter-rouge">Le_RenewalDays</code> value. It defaults to 60 days, but step-ca certs default expires in 1 day, so you’ll need to mess with this value</p>
 
-<p>To fix part 4, we need to send some commands to HAProxy to set a new SSL cert.</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#!/bin/bash
-
-echo “========================== SET SSL CERT ==========================“
-echo "$(cat /home/pi/.acme.sh/octoprint.aws.pem)"
-echo -e "set ssl cert /home/pi/.acme.sh/octoprint.aws.pem &lt;&lt;\n$(cat /home/pi/.acme.sh/octoprint.aws.pem)\n" | socat tcp-connect:localhost:9999 -
-
-echo “========================== SHOW SSL CERT - before ==========================“
-echo "show ssl cert */home/pi/.acme.sh/octoprint.aws.pem" | socat tcp-connect:localhost:9999 -
-
-echo “========================== COMMIT SSL CERT ==========================“
-echo "commit ssl cert /home/pi/.acme.sh/octoprint.aws.pem" | socat tcp-connect:localhost:9999 -
-
-echo “========================== SHOW SSL CERT - after ==========================“
-echo "show ssl cert /home/pi/.acme.sh/octoprint.aws.pem" | socat tcp-connect:localhost:9999 -
-</code></pre></div></div>
+<h3 id="resources">Resources</h3>
+<ol>
+  <li>https://www.haproxy.com/blog/haproxy-and-let-s-encrypt</li>
+</ol>
 
     </div>
   </article>
@@ -295,7 +273,7 @@ echo "show ssl cert /home/pi/.acme.sh/octoprint.aws.pem" | socat tcp-connect:loc
     <footer class="fixed-bottom">
       <div class="container mt-0">
         © Copyright 2024 Andrew M. Zhang. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. Photos from <a href="https://unsplash.com" target="_blank" rel="external nofollow noopener">Unsplash</a>.
-Last updated: April 18, 2024.
+Last updated: April 28, 2024.
       </div>
     </footer>
 
