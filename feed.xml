@@ -1,41 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://andrewmzhang.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewmzhang.com/" rel="alternate" type="text/html" hreflang="en" /><updated>2024-04-28T19:57:26+00:00</updated><id>https://andrewmzhang.com/feed.xml</id><title type="html">blank</title><subtitle>Personal site of Andrew Zhang
-</subtitle><entry><title type="html">Running step-ca in docker w/ Yubikey</title><link href="https://andrewmzhang.com/blog/2023/running-step-ca-in-docker-w-yubikey/" rel="alternate" type="text/html" title="Running step-ca in docker w/ Yubikey" /><published>2023-07-24T00:00:00+00:00</published><updated>2023-07-24T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2023/running-step-ca-in-docker-w-yubikey</id><content type="html" xml:base="https://andrewmzhang.com/blog/2023/running-step-ca-in-docker-w-yubikey/"><![CDATA[<h4 id="abstract">Abstract</h4>
-
-<p>Carl Tashian of Smallstep wrote a blog post regarding <a href="https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/">Building a Tiny Certificate Authority For Your Homelab</a>. 
-This guide provides very complete instructions on how to install a step-ca certificate authority on a Raspberry Pi 4 
-and how to store the private keys securely on a Yubikey. This post is written assuming familiarity with this guide.
-Namely, be familiar with the process of running the <code class="language-plaintext highlighter-rouge">step ca init</code> twice, once to setup the private keys off-host (ie usb)
-, then again to setup the directory structure. Certs must then be copied from the off-host device to the directory 
-structure. Private keys on the off-host device are loaded into a Yubikey.</p>
-
-<p>The only problem is I like using Docker and I generally dislike running stuff on bare metal. Unfortunately, there are
-not any clear instructions on how to use the <code class="language-plaintext highlighter-rouge">smallstep/step-ca:hsm</code> image with a Raspberry Pi with a Yubikey. My guide 
-will roughly follow the same steps except using docker.</p>
-
-<p><strong><em>NOTE</em></strong> There is currently a bug in step-ca’s <code class="language-plaintext highlighter-rouge">dockerfile.hsm</code>. See the final step of the guide for a quick fix.</p>
-
-<p>Read the following to understand the parts of a PKI https://smallstep.com/blog/everything-pki/</p>
-
-<h2 id="requirements">Requirements</h2>
-<ul>
-  <li>Rpi</li>
-  <li>Yubikey</li>
-  <li>USB stick</li>
-</ul>
-
-<h2 id="setup-rpi">Setup Rpi</h2>
-
-<p>I tried this using both Ubuntu and Raspbian on Rpi. I think it’ll work on any Rpi OS that supports Docker. Do whatever
-you need to do to install Docker.</p>
-
-<h2 id="setup-root-and-intermediate-keys-onto-usb-stick">Setup Root and Intermediate keys onto USB stick</h2>
-
-<p>The goal is to have the root and intermediate keys on a USB stick, just like in Carl’s guide. Though, I recommend
-using a LUKS encrypted USB stick to hold the keys. You can steal the commands for setting that up here: https://github.com/drduh/YubiKey-Guide#backup</p>
-
-<p>For the remainder of the guide I’ll assume your usb, encrypted or otherwise, is mounted here <code class="language-plaintext highlighter-rouge">/mnt/usb/</code></p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># modified from `Manual Installation` here https://hub.docker.com/r/smallstep/step-ca</span>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://andrewmzhang.com/feed.xml" rel="self" type="application/atom+xml"/><link href="https://andrewmzhang.com/" rel="alternate" type="text/html" hreflang="en"/><updated>2024-04-28T21:40:38+00:00</updated><id>https://andrewmzhang.com/feed.xml</id><title type="html">blank</title><subtitle>Personal site of Andrew Zhang </subtitle><entry><title type="html">Running step-ca in docker w/ Yubikey</title><link href="https://andrewmzhang.com/blog/2023/running-step-ca-in-docker-w-yubikey/" rel="alternate" type="text/html" title="Running step-ca in docker w/ Yubikey"/><published>2023-07-24T00:00:00+00:00</published><updated>2023-07-24T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2023/running-step-ca-in-docker-w-yubikey</id><content type="html" xml:base="https://andrewmzhang.com/blog/2023/running-step-ca-in-docker-w-yubikey/"><![CDATA[<h4 id="abstract">Abstract</h4> <p>Carl Tashian of Smallstep wrote a blog post regarding <a href="https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/">Building a Tiny Certificate Authority For Your Homelab</a>. This guide provides very complete instructions on how to install a step-ca certificate authority on a Raspberry Pi 4 and how to store the private keys securely on a Yubikey. This post is written assuming familiarity with this guide. Namely, be familiar with the process of running the <code class="language-plaintext highlighter-rouge">step ca init</code> twice, once to setup the private keys off-host (ie usb) , then again to setup the directory structure. Certs must then be copied from the off-host device to the directory structure. Private keys on the off-host device are loaded into a Yubikey.</p> <p>The only problem is I like using Docker and I generally dislike running stuff on bare metal. Unfortunately, there are not any clear instructions on how to use the <code class="language-plaintext highlighter-rouge">smallstep/step-ca:hsm</code> image with a Raspberry Pi with a Yubikey. My guide will roughly follow the same steps except using docker.</p> <p><strong><em>NOTE</em></strong> There is currently a bug in step-ca’s <code class="language-plaintext highlighter-rouge">dockerfile.hsm</code>. See the final step of the guide for a quick fix.</p> <p>Read the following to understand the parts of a PKI https://smallstep.com/blog/everything-pki/</p> <h2 id="requirements">Requirements</h2> <ul> <li>Rpi</li> <li>Yubikey</li> <li>USB stick</li> </ul> <h2 id="setup-rpi">Setup Rpi</h2> <p>I tried this using both Ubuntu and Raspbian on Rpi. I think it’ll work on any Rpi OS that supports Docker. Do whatever you need to do to install Docker.</p> <h2 id="setup-root-and-intermediate-keys-onto-usb-stick">Setup Root and Intermediate keys onto USB stick</h2> <p>The goal is to have the root and intermediate keys on a USB stick, just like in Carl’s guide. Though, I recommend using a LUKS encrypted USB stick to hold the keys. You can steal the commands for setting that up here: https://github.com/drduh/YubiKey-Guide#backup</p> <p>For the remainder of the guide I’ll assume your usb, encrypted or otherwise, is mounted here <code class="language-plaintext highlighter-rouge">/mnt/usb/</code></p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># modified from `Manual Installation` here https://hub.docker.com/r/smallstep/step-ca</span>
 
 docker pull smallstep/step-ca:hsm
 
@@ -47,9 +10,9 @@ there is no ca.json config file<span class="p">;</span> please run step ca init,
 ✔ Deployment Type: Standalone                                                   <span class="c"># Select Standalone</span>
 What would you like to name your new PKI?
 ✔ <span class="o">(</span>e.g. Smallstep<span class="o">)</span>: TinyCA                                                      <span class="c"># Give it a name. This will appear in yoru certs</span>
-What DNS names or IP addresses will clients use to reach your CA?               
+What DNS names or IP addresses will clients use to reach your CA?
 ✔ <span class="o">(</span>e.g. ca.example.com[,10.1.2.3,etc.]<span class="o">)</span>: ca.internal,192.168.0.101,10.10.10.10  <span class="c"># You can list a bunch of these. Values can be adjusted layer in /mnt/usb/config/ca.json</span>
-What IP and port will your new CA <span class="nb">bind </span>to? <span class="o">(</span>:443 will <span class="nb">bind </span>to 0.0.0.0:443<span class="o">)</span>      
+What IP and port will your new CA <span class="nb">bind </span>to? <span class="o">(</span>:443 will <span class="nb">bind </span>to 0.0.0.0:443<span class="o">)</span>
 ✔ <span class="o">(</span>e.g. :443 or 127.0.0.1:443<span class="o">)</span>: :443                                            <span class="c"># You probably want :443</span>
 ✔ <span class="o">(</span>e.g. you@smallstep.com<span class="o">)</span>: email@example.com                                   <span class="c"># Your email</span>
 Choose a password <span class="k">for </span>your CA keys and first provisioner.
@@ -80,38 +43,7 @@ FEEDBACK 😍 🍻
   good or bad at feedback@smallstep.com or join GitHub Discussions
   https://github.com/smallstep/certificates/discussions and our Discord
   https://u.step.sm/discord.
-</span></code></pre></div></div>
-
-<h3 id="optional-set-up-name-contraints">Optional: Set up name contraints</h3>
-
-<p>Follow the instructions here to setup up name constraints if you’re going to set it up for the root cert. This is probably
-good practice. If you don’t use name constraints and your CA is hijacked, then it can issue certs for any domains (ie google.com). 
-Usually name constraints are set on the intermediate cert but for custom TLDs and internal stuff, constraining the
-root cert is acceptable and is the only way to show clients that you’re not going to sign for stuff you don’t own (ie google.com).</p>
-
-<p>I use an internal TLD. You should set the permitted domains to also include the one you use for emails or else I think
-you could get issues. Ie I setup my name constraints to sign <code class="language-plaintext highlighter-rouge">.customtld</code>, <code class="language-plaintext highlighter-rouge">mydomain.com</code> (I own this), and <code class="language-plaintext highlighter-rouge">.mydomain.com</code></p>
-
-<h2 id="load-the-keys-onto-the-yubikey">Load the keys onto the yubikey</h2>
-
-<p>Check the instructions in the Carl Tashian guide for how to import the keys onto the yubikey. You might need to install
-<code class="language-plaintext highlighter-rouge">yubikey-manager</code> (ie ykman) and <code class="language-plaintext highlighter-rouge">pcscd</code></p>
-
-<p>https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/#import-the-ca-into-the-yubikey</p>
-
-<h2 id="remove-pcscd-from-the-bare-metal-machine-other-cleanup">Remove pcscd from the bare metal machine. Other cleanup</h2>
-
-<p>Uninstall the yubikey stuff after this step. The <code class="language-plaintext highlighter-rouge">pcscd</code> service on the host machine will lock up the yubikey to the 
-host meaning we can’t pass it to the docker container.</p>
-
-<p>Unmount the encrypted drive. You don’t need it anymore</p>
-
-<h2 id="create-a-skeleton-setup-without-secret-keys">Create a skeleton setup without secret keys</h2>
-
-<p>I’m going to assume that the docker mount for your step-ca server will be under <code class="language-plaintext highlighter-rouge">/home/pi/docker/mnt/step</code></p>
-
-<p>Run the following. Answer the prompts / set CLI variables the same way you answered them before</p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># modified from `Manual Installation` here https://hub.docker.com/r/smallstep/step-ca</span>
+</span></code></pre></div></div> <h3 id="optional-set-up-name-contraints">Optional: Set up name contraints</h3> <p>Follow the instructions here to setup up name constraints if you’re going to set it up for the root cert. This is probably good practice. If you don’t use name constraints and your CA is hijacked, then it can issue certs for any domains (ie google.com). Usually name constraints are set on the intermediate cert but for custom TLDs and internal stuff, constraining the root cert is acceptable and is the only way to show clients that you’re not going to sign for stuff you don’t own (ie google.com).</p> <p>I use an internal TLD. You should set the permitted domains to also include the one you use for emails or else I think you could get issues. Ie I setup my name constraints to sign <code class="language-plaintext highlighter-rouge">.customtld</code>, <code class="language-plaintext highlighter-rouge">mydomain.com</code> (I own this), and <code class="language-plaintext highlighter-rouge">.mydomain.com</code></p> <h2 id="load-the-keys-onto-the-yubikey">Load the keys onto the yubikey</h2> <p>Check the instructions in the Carl Tashian guide for how to import the keys onto the yubikey. You might need to install <code class="language-plaintext highlighter-rouge">yubikey-manager</code> (ie ykman) and <code class="language-plaintext highlighter-rouge">pcscd</code></p> <p>https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/#import-the-ca-into-the-yubikey</p> <h2 id="remove-pcscd-from-the-bare-metal-machine-other-cleanup">Remove pcscd from the bare metal machine. Other cleanup</h2> <p>Uninstall the yubikey stuff after this step. The <code class="language-plaintext highlighter-rouge">pcscd</code> service on the host machine will lock up the yubikey to the host meaning we can’t pass it to the docker container.</p> <p>Unmount the encrypted drive. You don’t need it anymore</p> <h2 id="create-a-skeleton-setup-without-secret-keys">Create a skeleton setup without secret keys</h2> <p>I’m going to assume that the docker mount for your step-ca server will be under <code class="language-plaintext highlighter-rouge">/home/pi/docker/mnt/step</code></p> <p>Run the following. Answer the prompts / set CLI variables the same way you answered them before</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># modified from `Manual Installation` here https://hub.docker.com/r/smallstep/step-ca</span>
 docker pull smallstep/step-ca:hsm
 docker run <span class="nt">-it</span> <span class="nt">-v</span> /home/pi/docker/mnt/step/:/home/step smallstep/step-ca:hsm step ca init <span class="nt">--remote-management</span>
 <span class="c"># Follow the prompt the same way you filled out before</span>
@@ -120,10 +52,7 @@ docker run <span class="nt">-it</span> <span class="nt">-v</span> /home/pi/docke
 <span class="nb">rm</span> <span class="nt">-rf</span> /home/pi/docker/mnt/secrets/<span class="k">*</span>
 <span class="nb">cp</span> /mnt/usb/config/<span class="k">*</span> /home/pi/docker/mnt/step/config/
 <span class="nb">cp</span> /mnt/usb/certs/<span class="k">*</span> /home/pi/docker/mnt/step/certs/
-</code></pre></div></div>
-
-<p>Edit the file in <code class="language-plaintext highlighter-rouge">config/ca.json</code> to read something like. Edit values where appropriate</p>
-<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+</code></pre></div></div> <p>Edit the file in <code class="language-plaintext highlighter-rouge">config/ca.json</code> to read something like. Edit values where appropriate</p> <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
         </span><span class="nl">"root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/pi/docker/mnt/step/certs/root_ca.crt"</span><span class="p">,</span><span class="w">
         </span><span class="nl">"federatedRoots"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
         </span><span class="nl">"crt"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/home/pi/docker/mnt/step/certs/intermediate_ca.crt"</span><span class="p">,</span><span class="w">
@@ -134,86 +63,26 @@ docker run <span class="nt">-it</span> <span class="nt">-v</span> /home/pi/docke
         </span><span class="p">},</span><span class="w">
         </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">":443"</span><span class="w">
 </span><span class="err">//</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span><span class="w">
-</span></code></pre></div></div>
-
-<p>At this point, we’re fully setup to run the cert auth</p>
-
-<h2 id="random-stuff">Random stuff</h2>
-
-<p>You need a password file. It’s just a thing the docker entrypoint for <code class="language-plaintext highlighter-rouge">step-ca</code> expects.</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">touch</span> /home/pi/docker/mnt/step/secrets/password
-</code></pre></div></div>
-
-<h2 id="start-step-ca-and-pass-yubikey">Start step-ca and pass Yubikey</h2>
-
-<p>***I’m hoping that this section becomes fixed in the future. Track the PR here: <insert PR="" here="">***</insert></p>
-
-<p>Clone the repo <code class="language-plaintext highlighter-rouge">github.com/smallstep/certificates.git</code>. Copy <code class="language-plaintext highlighter-rouge">docker/Dockerfile.hsm</code> to repo root.</p>
-
-<p>So there’s a bug as of the writing of this guide 07/25/23. The issue is that the user <code class="language-plaintext highlighter-rouge">step</code> in the container doesn’t
-have adequate permission to run pcscd service. Thus you’re going to need to include these 3 lines in the Dockerfile</p>
-<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Change the first line to use golang:bullseye. Otherwise it might not build right on your RPI due to GLibC versioning issues</span>
+</span></code></pre></div></div> <p>At this point, we’re fully setup to run the cert auth</p> <h2 id="random-stuff">Random stuff</h2> <p>You need a password file. It’s just a thing the docker entrypoint for <code class="language-plaintext highlighter-rouge">step-ca</code> expects.</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">touch</span> /home/pi/docker/mnt/step/secrets/password
+</code></pre></div></div> <h2 id="start-step-ca-and-pass-yubikey">Start step-ca and pass Yubikey</h2> <p>**_I’m hoping that this section becomes fixed in the future. Track the PR here: <insert PR="" here="">_**</insert></p> <p>Clone the repo <code class="language-plaintext highlighter-rouge">github.com/smallstep/certificates.git</code>. Copy <code class="language-plaintext highlighter-rouge">docker/Dockerfile.hsm</code> to repo root.</p> <p>So there’s a bug as of the writing of this guide 07/25/23. The issue is that the user <code class="language-plaintext highlighter-rouge">step</code> in the container doesn’t have adequate permission to run pcscd service. Thus you’re going to need to include these 3 lines in the Dockerfile</p> <div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Change the first line to use golang:bullseye. Otherwise it might not build right on your RPI due to GLibC versioning issues</span>
 <span class="c"># If we're building on the rpi, this ensures we have the right glibc version.</span>
 <span class="c"># You may need to adjust as raspbian moves to newer versions</span>
-<span class="k">FROM</span><span class="w"> </span><span class="s">golang:bullseye</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder  </span>
+<span class="k">FROM</span><span class="w"> </span><span class="s">golang:bullseye</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="s">builder</span>
 
 <span class="c"># Insert this after `RUN chown step:step /run/pcscd` but before `USER step`</span>
 <span class="k">RUN </span>groupadd pcscd          <span class="c"># Create the pcscd group</span>
 <span class="k">RUN </span>usermod <span class="nt">-aG</span> pcscd step  <span class="c"># Adds the user step to pcscd group</span>
-</code></pre></div></div>
-
-<p>Then build this image and launch</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Execute the following from repo root
+</code></pre></div></div> <p>Then build this image and launch</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Execute the following from repo root
 docker build --no-cache -t some-catchy-name:hsm . # build docker image
 
 # You can figure out the bus and usb id via `lsusb` command. This does tend to change when you unplug and replug. You can
-# maybe use udevadm to set up a symlink. See the Carl Tashian guide for that setup. I think passing the --privileged 
+# maybe use udevadm to set up a symlink. See the Carl Tashian guide for that setup. I think passing the --privileged
 # flag will let the contianer access all devices
 docker run -d -p 443:443 -v /home/pi/docker/mnt/step:/home/step --device /dev/bus/usb/001/008:/dev/bus/usb/001/008 some-catchy-name:hsm
-</code></pre></div></div>
-
-<h2 id="messing-with-the-udev-rules">Messing with the udev rules</h2>
-
-<p>The above <em>should</em> work, but if it doesn’t, try running the container as root user with the option <code class="language-plaintext highlighter-rouge">-u 0</code></p>
-
-<p>I got mine to work with the <code class="language-plaintext highlighter-rouge">step</code> user (in the container) by setting these udev rules in the host. I’m not a udev expert
-but I think these changes let <code class="language-plaintext highlighter-rouge">pcscd</code> work correctly in the container without the <code class="language-plaintext highlighter-rouge">-u 0</code> option.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># IN file /etc/udev/rules.d/75-yubikey.rules
+</code></pre></div></div> <h2 id="messing-with-the-udev-rules">Messing with the udev rules</h2> <p>The above <em>should</em> work, but if it doesn’t, try running the container as root user with the option <code class="language-plaintext highlighter-rouge">-u 0</code></p> <p>I got mine to work with the <code class="language-plaintext highlighter-rouge">step</code> user (in the container) by setting these udev rules in the host. I’m not a udev expert but I think these changes let <code class="language-plaintext highlighter-rouge">pcscd</code> work correctly in the container without the <code class="language-plaintext highlighter-rouge">-u 0</code> option.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># IN file /etc/udev/rules.d/75-yubikey.rules
 ACTION=="add", SUBSYSTEM=="usb", ENV{PRODUCT}=="1050/406/*", TAG+="systemd", SYMLINK+="yubikey", GROUP="pcscd", MODE="0666", RUN+="/bin/chgrp pcscd $root/$parent"
 ACTION=="remove", SUBSYSTEM=="usb", ENV{PRODUCT}=="1050/406/*", TAG+="systemd"
-</code></pre></div></div>
-
-<h2 id="my-image">My image</h2>
-
-<p>You can get a copy of my rpi step-ca image via <code class="language-plaintext highlighter-rouge">docker pull andywebservices/step-ca:hsm</code>.</p>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech" /><category term="AndyWebServices" /><category term="Certificate" /><category term="Authority" /><category term="Yubikey" /><category term="smallstep" /><category term="step-ca" /><summary type="html"><![CDATA[How to run step-ca in docker while storing private keys on Yubikey]]></summary></entry><entry><title type="html">Reverse Proxies With Custom ACME</title><link href="https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/" rel="alternate" type="text/html" title="Reverse Proxies With Custom ACME" /><published>2023-05-25T00:00:00+00:00</published><updated>2023-05-25T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme</id><content type="html" xml:base="https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/"><![CDATA[<h1 id="intro">Intro</h1>
-<p>This page assumes that you have some custom ACME server (see previous post) and you want a reverse proxy (eg Nginx, HaProxy) to use it to generate certs automatically.</p>
-
-<h1 id="swag---docker-swag-official">SWAG - <a href="https://github.com/linuxserver/docker-swag">docker-swag official</a></h1>
-<h4 id="additional-links">Additional Links:</h4>
-<ol>
-  <li>Dockerhub image: <a href="https://hub.docker.com/r/andywebservices/swag">andywebservices/swag</a></li>
-</ol>
-
-<h2 id="explanation">Explanation</h2>
-<p>At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature <a href="http://https://github.com/andrewmzhang/docker-swag">andrewmzhang/docker-swag</a>. It’s probably easier to see how the feature works by looking at the <a href="https://github.com/linuxserver/docker-swag/pull/371">diff</a>. This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore.</p>
-
-<p>Docker-swag is a complete solution. It’ll renew the certificates once a day and refresh Nginx service to pick up the new certs.</p>
-
-<h1 id="haproxy--acmesh---haproxy">HAProxy + ACME.sh - <a href="https://github.com/haproxy/haproxy">haproxy</a></h1>
-<h2 id="issues">Issues</h2>
-<p><strong>EDIT: This section was updated on 2024-04-17. The previous instructions were out of date</strong></p>
-
-<p>HAProxy suffers several issues.</p>
-<ol>
-  <li>It cannot provision its own SSL certs, ie it cannot do the ACME dance</li>
-  <li>It hogs port 80 and 443, in order for 3rd party acme to work correctly the acme program needs 80 and 443.</li>
-  <li>It demands that the SSL privkey be in the same file as the cert bundle</li>
-  <li>It cannot tell if the SSL cert has changed on disk, thus users need to send commands to get HAProxy to refresh the certs</li>
-</ol>
-
-<p>Fortunately, <code class="language-plaintext highlighter-rouge">acme.sh</code> has some helpers that make this procedure relatively painless</p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Register an account thumbprint. This will produce a thumbprint. Copy that value</span>
+</code></pre></div></div> <h2 id="my-image">My image</h2> <p>You can get a copy of my rpi step-ca image via <code class="language-plaintext highlighter-rouge">docker pull andywebservices/step-ca:hsm</code>.</p>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech"/><category term="AndyWebServices"/><category term="Certificate"/><category term="Authority"/><category term="Yubikey"/><category term="smallstep"/><category term="step-ca"/><summary type="html"><![CDATA[How to run step-ca in docker while storing private keys on Yubikey]]></summary></entry><entry><title type="html">Reverse Proxies With Custom ACME</title><link href="https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/" rel="alternate" type="text/html" title="Reverse Proxies With Custom ACME"/><published>2023-05-25T00:00:00+00:00</published><updated>2023-05-25T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme</id><content type="html" xml:base="https://andrewmzhang.com/blog/2023/reverse-proxies-with-custom-acme/"><![CDATA[<h1 id="intro">Intro</h1> <p>This page assumes that you have some custom ACME server (see previous post) and you want a reverse proxy (eg Nginx, HaProxy) to use it to generate certs automatically.</p> <h1 id="swag---docker-swag-official">SWAG - <a href="https://github.com/linuxserver/docker-swag">docker-swag official</a></h1> <h4 id="additional-links">Additional Links:</h4> <ol> <li>Dockerhub image: <a href="https://hub.docker.com/r/andywebservices/swag">andywebservices/swag</a></li> </ol> <h2 id="explanation">Explanation</h2> <p>At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature <a href="https://github.com/AndyWebServices/docker-swag">andrewmzhang/docker-swag</a>. It’s probably easier to see how the feature works by looking at the <a href="https://github.com/linuxserver/docker-swag/pull/371">diff</a>. This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore.</p> <p>Docker-swag is a complete solution. It’ll renew the certificates once a day and refresh Nginx service to pick up the new certs.</p> <h1 id="haproxy--acmesh---haproxy">HAProxy + ACME.sh - <a href="https://github.com/haproxy/haproxy">haproxy</a></h1> <h2 id="issues">Issues</h2> <p><strong>EDIT: This section was updated on 2024-04-17. The previous instructions were out of date</strong></p> <p>HAProxy suffers several issues.</p> <ol> <li>It cannot provision its own SSL certs, ie it cannot do the ACME dance</li> <li>It hogs port 80 and 443, in order for 3rd party acme to work correctly the acme program needs 80 and 443.</li> <li>It demands that the SSL privkey be in the same file as the cert bundle</li> <li>It cannot tell if the SSL cert has changed on disk, thus users need to send commands to get HAProxy to refresh the certs</li> </ol> <p>Fortunately, <code class="language-plaintext highlighter-rouge">acme.sh</code> has some helpers that make this procedure relatively painless</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Register an account thumbprint. This will produce a thumbprint. Copy that value</span>
 ./acme.sh <span class="nt">--register-account</span> <span class="nt">--server</span> https://step-ca.internal/acme/acme/directory <span class="nt">-m</span> myemail@example.com
 
 <span class="c"># Edit the following into /etc/haproxy/haproxy.cfg</span>
@@ -225,233 +94,36 @@ global
 frontend public
         <span class="nb">bind</span> :::80 v4v6
         <span class="nb">bind</span> :::443 v4v6 ssl crt /etc/haproxy/certs/ strict-sni  <span class="c"># This allows haproxy to boot without certs, which you wont have initially</span>
-        <span class="c"># The directive below means when the certificate authority navigates to my.domain.internal/.well-known/acme-challenge/ HAProxy will reply with the account thumbprint </span>
+        <span class="c"># The directive below means when the certificate authority navigates to my.domain.internal/.well-known/acme-challenge/ HAProxy will reply with the account thumbprint</span>
         http-request <span class="k">return </span>status 200 content-type text/plain lf-string <span class="s2">"%[path,field(-1,/)].</span><span class="k">${</span><span class="nv">ACCOUNT_THUMBPRINT</span><span class="k">}</span><span class="se">\n</span><span class="s2">"</span> <span class="k">if</span> <span class="o">{</span> path_beg <span class="s1">'/.well-known/acme-challenge/'</span> <span class="o">}</span>
 
 <span class="c"># Do the ACME dance, ACME will write some config files under ~/.acme.sh/mydomain.internal_ecc. Note the deploy-hook and --days 1</span>
 ./acme.sh <span class="nt">--stateless</span> <span class="nt">--issue</span> <span class="nt">-d</span> my.domain.internal <span class="nt">--server</span> https://step-ca.internal/acme/acme/directory <span class="nt">--ca-bundle</span> ~/my_root_ca.crt <span class="nt">--deploy</span> <span class="nt">--deploy-hook</span> haproxy <span class="nt">--days</span> 1
 <span class="c"># Remember to update cron</span>
 ./acme.sh <span class="nt">--install-cronjob</span>
-</code></pre></div></div>
-
-<p>Remember to check the .acme.sh config files, namely the <code class="language-plaintext highlighter-rouge">Le_RenewalDays</code> value. It defaults to 60 days, but step-ca certs default expires in 1 day, so you’ll need to mess with this value</p>
-
-<h3 id="resources">Resources</h3>
-<ol>
-  <li>https://www.haproxy.com/blog/haproxy-and-let-s-encrypt</li>
-</ol>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech" /><category term="AndyWebServices" /><category term="Tailscale" /><category term="network" /><category term="SSL" /><summary type="html"><![CDATA[Caveats and solutions regarding setting up a custom ACME server with various reverse proxies]]></summary></entry><entry><title type="html">Custom TLD Over Tailscale</title><link href="https://andrewmzhang.com/blog/2023/custom-tld/" rel="alternate" type="text/html" title="Custom TLD Over Tailscale" /><published>2023-05-17T00:00:00+00:00</published><updated>2023-05-17T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2023/custom-tld</id><content type="html" xml:base="https://andrewmzhang.com/blog/2023/custom-tld/"><![CDATA[<p>Note: It’s like 2am and I was too sleepy to edit this, so I fed it through chatGPT and called it a day. I think it
-made some minor mistakes and poor word choice. I’ll fix it tomorrow or something…</p>
-
-<h1 id="intro">Intro</h1>
-
-<p>Tailscale is a Wireguard-based VPN software that I rely on for secure and remote access across my devices. I appreciate
-its remarkably minimal setup process - simply installing Tailscale on a device grants it access to the VPN, with the
-software taking care of the rest. However, one inconvenience I encountered was the built-in DNS’s limitation of
-resolving device hostnames without a TLD. For instance, if I add a machine with the hostname machineA, I can access
-webpages hosted on it via https://machineA, but unfortunately, Tailscale DNS does not support setting the domain to
-something like https://machineA.ctld. This page documents my solution to implementing a private TLD over a Tailscale
-network.</p>
-
-<p>I am committed to using TLS because I value the green lock symbol and the assurance it provides. It is crucial for my
-setup to appear legitimate; otherwise, people may doubt the credibility of AndyWebServices El El Sí as a legitimate
-company. This credibility is essential for attracting investors and achieving a valuation of 100 trillion.</p>
-
-<p>To clarify. These are the requirements:</p>
-
-<ul>
-  <li>Any and only devices connected by my Tailscale network should be able to access the custom tld network</li>
-  <li>I intend to use a custom TLD format, such as hostname.ctld. For the purpose of this guide, I will use .ctld as the
-TLD.</li>
-  <li>HTTPS functionality</li>
-</ul>
-
-<h1 id="resolving-a-custom-tld-over-tailscale">Resolving a custom TLD over Tailscale</h1>
-
-<h2 id="resolving-custom-tld">Resolving custom TLD</h2>
-
-<p>Tailscale facilitates secure connections between devices within the Tailscale network. Each device on the Tailscale
-network is assigned a static Tailscale IP (100.xx.yy.zz) along with a non-TLD domain. The resolution of this non-TLD
-domain is handled by a local DNS resolver that is included with the Tailscale installation.</p>
-
-<p>To incorporate a custom TLD into this setup, the first step is to set up a dedicated DNS server to resolve <code class="language-plaintext highlighter-rouge">*.ctld</code>
-domains. I recommend following the setup outlined below:</p>
-
-<ol>
-  <li>Obtain a Raspberry Pi device.
-    <ol>
-      <li>If you intend to replicate my network setup, install and configure Ubuntu on the Raspberry Pi.</li>
-    </ol>
-  </li>
-  <li>Connect the Raspberry Pi to the Tailscale (TS) network. For the sake of this guide, let’s assume it is assigned the
-TS IP address <code class="language-plaintext highlighter-rouge">100.100.100.101</code>.</li>
-  <li>Install and set up <code class="language-plaintext highlighter-rouge">dnsmasq</code> on the Raspberry Pi.</li>
-  <li>Edit the <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file on the Raspberry Pi to manually define the DNS entries.
-    <ol>
-      <li>In case you are using the default Ubuntu installation, you may need to modify the cloud-init template. Please
-refer to the comments in your <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file for guidance.</li>
-      <li>The entries in the <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file should resemble the following format:</li>
-    </ol>
-  </li>
-</ol>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/hosts</span>
+</code></pre></div></div> <p>Remember to check the .acme.sh config files, namely the <code class="language-plaintext highlighter-rouge">Le_RenewalDays</code> value. It defaults to 60 days, but step-ca certs default expires in 1 day, so you’ll need to mess with this value</p> <h3 id="resources">Resources</h3> <ol> <li>https://www.haproxy.com/blog/haproxy-and-let-s-encrypt</li> </ol>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech"/><category term="AndyWebServices"/><category term="Tailscale"/><category term="network"/><category term="SSL"/><summary type="html"><![CDATA[Caveats and solutions regarding setting up a custom ACME server with various reverse proxies]]></summary></entry><entry><title type="html">Custom TLD Over Tailscale</title><link href="https://andrewmzhang.com/blog/2023/custom-tld/" rel="alternate" type="text/html" title="Custom TLD Over Tailscale"/><published>2023-05-17T00:00:00+00:00</published><updated>2023-05-17T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2023/custom-tld</id><content type="html" xml:base="https://andrewmzhang.com/blog/2023/custom-tld/"><![CDATA[<p>Note: It’s like 2am and I was too sleepy to edit this, so I fed it through chatGPT and called it a day. I think it made some minor mistakes and poor word choice. I’ll fix it tomorrow or something…</p> <h1 id="intro">Intro</h1> <p>Tailscale is a Wireguard-based VPN software that I rely on for secure and remote access across my devices. I appreciate its remarkably minimal setup process - simply installing Tailscale on a device grants it access to the VPN, with the software taking care of the rest. However, one inconvenience I encountered was the built-in DNS’s limitation of resolving device hostnames without a TLD. For instance, if I add a machine with the hostname machineA, I can access webpages hosted on it via https://machineA, but unfortunately, Tailscale DNS does not support setting the domain to something like https://machineA.ctld. This page documents my solution to implementing a private TLD over a Tailscale network.</p> <p>I am committed to using TLS because I value the green lock symbol and the assurance it provides. It is crucial for my setup to appear legitimate; otherwise, people may doubt the credibility of AndyWebServices El El Sí as a legitimate company. This credibility is essential for attracting investors and achieving a valuation of 100 trillion.</p> <p>To clarify. These are the requirements:</p> <ul> <li>Any and only devices connected by my Tailscale network should be able to access the custom tld network</li> <li>I intend to use a custom TLD format, such as hostname.ctld. For the purpose of this guide, I will use .ctld as the TLD.</li> <li>HTTPS functionality</li> </ul> <h1 id="resolving-a-custom-tld-over-tailscale">Resolving a custom TLD over Tailscale</h1> <h2 id="resolving-custom-tld">Resolving custom TLD</h2> <p>Tailscale facilitates secure connections between devices within the Tailscale network. Each device on the Tailscale network is assigned a static Tailscale IP (100.xx.yy.zz) along with a non-TLD domain. The resolution of this non-TLD domain is handled by a local DNS resolver that is included with the Tailscale installation.</p> <p>To incorporate a custom TLD into this setup, the first step is to set up a dedicated DNS server to resolve <code class="language-plaintext highlighter-rouge">*.ctld</code> domains. I recommend following the setup outlined below:</p> <ol> <li>Obtain a Raspberry Pi device. <ol> <li>If you intend to replicate my network setup, install and configure Ubuntu on the Raspberry Pi.</li> </ol> </li> <li>Connect the Raspberry Pi to the Tailscale (TS) network. For the sake of this guide, let’s assume it is assigned the TS IP address <code class="language-plaintext highlighter-rouge">100.100.100.101</code>.</li> <li>Install and set up <code class="language-plaintext highlighter-rouge">dnsmasq</code> on the Raspberry Pi.</li> <li>Edit the <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file on the Raspberry Pi to manually define the DNS entries. <ol> <li>In case you are using the default Ubuntu installation, you may need to modify the cloud-init template. Please refer to the comments in your <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file for guidance.</li> <li>The entries in the <code class="language-plaintext highlighter-rouge">/etc/hosts</code> file should resemble the following format:</li> </ol> </li> </ol> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /etc/hosts</span>
 <span class="c"># tailscale_IP hostname</span>
 myMachineA.ctld 100.100.100.123
-</code></pre></div></div>
-
-<p>You only need to perform this setup once since the Tailscale IP is static. Keep in mind that these IPs are only
-accessible when connected to the VPN. While it is advisable to configure <code class="language-plaintext highlighter-rouge">dnsmasq</code> on your Tailscale network interface,
-setting it up on <code class="language-plaintext highlighter-rouge">0.0.0.0</code> is unlikely to pose a security risk.</p>
-
-<h2 id="splitdns">SplitDNS</h2>
-
-<p>We must ensure the proper utilization of the DNS server by devices connected to the Tailscale network. To achieve
-this, we will proceed with configuring SplitDNS within the Tailscale Admin Console. Our primary objective is to
-establish the resolution of <code class="language-plaintext highlighter-rouge">*.ctld</code> to the Tailscale IP address assigned to the DNS server,
-specifically <code class="language-plaintext highlighter-rouge">100.100.100.101</code>.</p>
-
-<p>By implementing this approach, any device that joins the Tailscale Network will seamlessly attempt to utilize the DNS
-resolver of the Raspberry Pi (rpi) running dnsmasq, but solely for domains associated with our custom top-level domain (
-<code class="language-plaintext highlighter-rouge">ctld</code>). This strategy ensures optimal efficiency, as domain resolutions for standard domains like <code class="language-plaintext highlighter-rouge">google.com</code> continue
-to
-be handled by the local DNS, while requests for <code class="language-plaintext highlighter-rouge">*.ctld</code> domains are routed through the Tailscale network’s DNS server,
-which may incur a higher latency if our rpi is not nearby.</p>
-
-<h1 id="tls-certificates--the-green-stuff-">TLS Certificates ( The Green Stuff )</h1>
-
-<p>To enable the use of HTTPS without encountering any browser warnings, obtaining TLS certificates is essential. If you
-are already familiar with TLS and its intricacies, you may skip the remaining portion of this subsection. However, if
-you require a more detailed explanation, there are numerous comprehensive resources available online.</p>
-
-<p>TLS, which stands for Transport Layer Security, is a crucial component of Private Key Infrastructure (PKI)
-framework. When a client and server aim to establish a secure communication channel, the client must be aware of the
-server’s public key. While the DNS server provides the IP address of <code class="language-plaintext highlighter-rouge">machineA.ctld</code>, it does not verify the legitimacy
-of the server’s public key. TLS ensures that the key has not been tampered with or maliciously
-altered during transit over the network. While communications between Tailscale (TS) devices are considered secure, the
-broader internet cannot make such assumptions. Therefore, without the server’s public key, secure communication becomes
-impossible. This is where TLS certificates come into play.</p>
-
-<p>A TLS certificate is an attestation signed by a trusted entity known as a Certificate Authority (CA). It asserts that a
-specific public key belongs to <code class="language-plaintext highlighter-rouge">machineA.ctld</code>. Understanding the three levels of TLS certificates is
-important. First, the root certificate is a self-signed certificate that contains the public key of the CA. This root
-certificate must be installed on all machines requiring TLS functionality for our custom TLD. The private key used to
-sign the root certificate is typically kept offline in cold storage, as recovery from a compromised root key is
-impossible,
-eg you can’t sign a revocation if your private key cannot be trusted.</p>
-
-<p>The intermediate certificate is signed by the root certificate and is responsible for signing leaf certificates. Unlike
-the root certificate, the private key of the intermediate certificate is usually kept online since it is required to
-sign leaf certificates. If an intermediate certificate becomes compromised or expires, the root private key can be
-brought out of cold storage to issue a revocation.</p>
-
-<p>The leaf or end certificate, which is presented by <code class="language-plaintext highlighter-rouge">machineA.ctld</code>, serves as proof that its public key is legitimate.
-The
-intermediate certificate has the authority to revoke leaf certificates if <code class="language-plaintext highlighter-rouge">machineA.ctld</code> exhibits malicious behavior.</p>
-
-<p>TLS certificates can be generated by the CA and securely transferred to the server using methods like scp. This approach
-is particularly useful for devices where running ACME (Automated Certificate Management Environment) properly is not
-feasible. Or if the CA cannot establish bi-directional communication with the machine for some reason. ACME provides an
-automated mechanism for generating certificate signing requests and validating the domain ownership to the CA.</p>
-
-<p>By understanding these concepts, we can effectively utilize TLS certificates to establish secure and trusted
-communication channels, ensuring the green lock symbol and seamless HTTPS functionality in our browsers.</p>
-
-<h2 id="acme">ACME</h2>
-
-<p>If you have previous experience with Let’s Encrypt or certbot, then you are likely familiar with the ACME (Automated
-Certificate Management Environment) protocol. ACME is a collection of protocols that servers can employ to demonstrate
-their ownership of domain names to Certificate Authorities (CAs) when requesting certificates. The primary purpose of a
-certificate is to certify that machineA.ctld is indeed the owner of a specific public key.</p>
-
-<p>ACME offers two verification methods, with the less commonly used method being DNS certification. In this approach, the
-client server contacts the ACME server and claims ownership of machineA.ctld. The client server provides a
-Certificate Signing Request (CSR) to the ACME server for signing. The ACME server then requests the client server to add
-a specific string to the TXT section of the DNS record. If the server genuinely owns machineA.ctld and its authoritative
-nameserver supports an API for managing domain records, the server can perform the required operation and have it
-verified by the ACME server. However, as we are utilizing dnsmasq as our DNS server, the specific steps for performing
-this operation are not within my expertise.</p>
-
-<p>It is worth noting that the DNS certification method is less common compared to the alternative method, which involves
-proving ownership through HTTP-based challenges. This method requires the server to respond to a challenge by placing a
-designated file at a specified location on the web server. The ACME server then attempts to access the file to validate
-ownership. This approach is generally more straightforward to implement and is not dependent on what API your DNS
-provider happens to supply.</p>
-
-<h2 id="step-ca">Step CA</h2>
-
-<p>To proceed with setting up an ACME server on a Raspberry Pi, we can follow the guide provided
-at https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/. Although the guide incorporates using a
-YubiKey for loading keys, it is not necessary for our purposes. However, adhering to proper security practices is always
-recommended, and if you have access to YubiKeys, it can enhance the overall security of the setup. I get them for free
-at work. There is an option to use the infnoise generator dongle, but we will opt because it costs too much and I don’t
-get them for free at work. I recommend you use the same Raspberry Pi you’re hosting the ctld DNS off of. Note that the
-ACME server will run on port 443, while the DNS server will operate on port 53, ensuring that there won’t be any
-conflicts between the two services.</p>
-
-<p>During the setup process, remember to modify the domain from <code class="language-plaintext highlighter-rouge">tinyca.internal</code> to a domain of your choice with
-the <code class="language-plaintext highlighter-rouge">.ctld</code> extension, such as <code class="language-plaintext highlighter-rouge">ctldca.ctld</code>.</p>
-
-<p>Once you have completed this step, you will be able to request TLS certificates for your custom domain, allowing you to
-establish secure connections using HTTPS.</p>
-
-<h2 id="install-the-root-cert">Install the root cert</h2>
-
-<p>To ensure that your browser and servers recognize the custom TLD Certificate Authority (CA) and avoid any issues with
-certificate verification, install the root certificate into the truststore of your devices. This step
-will establish trust in the certificates issued by the custom CA.</p>
-
-<p>To verify if the installation was successful, you can open a shell or command prompt and execute the
-command <code class="language-plaintext highlighter-rouge">curl https://machinea.ctld</code>. If you encounter an error 60, it indicates that the CA is not recognized by your
-machine, indicating a problem with the root certificate installation.</p>
-
-<p>For convenience and ease of use, it is recommended to store the root certificate in a cloud drive or a similar storage
-solution. This way, you can readily access and install it on new devices whenever necessary.</p>
-
-<h2 id="requesting-a-cert">Requesting a cert</h2>
-
-<p>You can refer to the guides provided at https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/ for detailed
-instructions on setting up various ACME clients. However, if you’re looking for a straightforward and user-friendly
-option, I recommend using acme.sh.</p>
-
-<h3 id="some-pitfalls-in-cert-requesting">Some pitfalls in cert requesting</h3>
-
-<p>I’ll probably split this off into separate guides when I get the chance.</p>
-
-<h4 id="haproxy">HAProxy</h4>
-
-<p>Certain reverse proxies, such as HAProxy, will require the leaf private key and certificate in one file.  If this 
-is the case you will need to cat the key and cert together. A reverse proxy may also hog port 80 and 443 which are needed to
-do the ACME challenge, in which case you will need to carve out a path to the ACME client.</p>
-
-<p>Here is my setup for HAProxy - it’s my octoprint server:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># In /etc/haproxy/haproxy.cfg</span>
+</code></pre></div></div> <p>You only need to perform this setup once since the Tailscale IP is static. Keep in mind that these IPs are only accessible when connected to the VPN. While it is advisable to configure <code class="language-plaintext highlighter-rouge">dnsmasq</code> on your Tailscale network interface, setting it up on <code class="language-plaintext highlighter-rouge">0.0.0.0</code> is unlikely to pose a security risk.</p> <h2 id="splitdns">SplitDNS</h2> <p>We must ensure the proper utilization of the DNS server by devices connected to the Tailscale network. To achieve this, we will proceed with configuring SplitDNS within the Tailscale Admin Console. Our primary objective is to establish the resolution of <code class="language-plaintext highlighter-rouge">*.ctld</code> to the Tailscale IP address assigned to the DNS server, specifically <code class="language-plaintext highlighter-rouge">100.100.100.101</code>.</p> <p>By implementing this approach, any device that joins the Tailscale Network will seamlessly attempt to utilize the DNS resolver of the Raspberry Pi (rpi) running dnsmasq, but solely for domains associated with our custom top-level domain ( <code class="language-plaintext highlighter-rouge">ctld</code>). This strategy ensures optimal efficiency, as domain resolutions for standard domains like <code class="language-plaintext highlighter-rouge">google.com</code> continue to be handled by the local DNS, while requests for <code class="language-plaintext highlighter-rouge">*.ctld</code> domains are routed through the Tailscale network’s DNS server, which may incur a higher latency if our rpi is not nearby.</p> <h1 id="tls-certificates--the-green-stuff-">TLS Certificates ( The Green Stuff )</h1> <p>To enable the use of HTTPS without encountering any browser warnings, obtaining TLS certificates is essential. If you are already familiar with TLS and its intricacies, you may skip the remaining portion of this subsection. However, if you require a more detailed explanation, there are numerous comprehensive resources available online.</p> <p>TLS, which stands for Transport Layer Security, is a crucial component of Private Key Infrastructure (PKI) framework. When a client and server aim to establish a secure communication channel, the client must be aware of the server’s public key. While the DNS server provides the IP address of <code class="language-plaintext highlighter-rouge">machineA.ctld</code>, it does not verify the legitimacy of the server’s public key. TLS ensures that the key has not been tampered with or maliciously altered during transit over the network. While communications between Tailscale (TS) devices are considered secure, the broader internet cannot make such assumptions. Therefore, without the server’s public key, secure communication becomes impossible. This is where TLS certificates come into play.</p> <p>A TLS certificate is an attestation signed by a trusted entity known as a Certificate Authority (CA). It asserts that a specific public key belongs to <code class="language-plaintext highlighter-rouge">machineA.ctld</code>. Understanding the three levels of TLS certificates is important. First, the root certificate is a self-signed certificate that contains the public key of the CA. This root certificate must be installed on all machines requiring TLS functionality for our custom TLD. The private key used to sign the root certificate is typically kept offline in cold storage, as recovery from a compromised root key is impossible, eg you can’t sign a revocation if your private key cannot be trusted.</p> <p>The intermediate certificate is signed by the root certificate and is responsible for signing leaf certificates. Unlike the root certificate, the private key of the intermediate certificate is usually kept online since it is required to sign leaf certificates. If an intermediate certificate becomes compromised or expires, the root private key can be brought out of cold storage to issue a revocation.</p> <p>The leaf or end certificate, which is presented by <code class="language-plaintext highlighter-rouge">machineA.ctld</code>, serves as proof that its public key is legitimate. The intermediate certificate has the authority to revoke leaf certificates if <code class="language-plaintext highlighter-rouge">machineA.ctld</code> exhibits malicious behavior.</p> <p>TLS certificates can be generated by the CA and securely transferred to the server using methods like scp. This approach is particularly useful for devices where running ACME (Automated Certificate Management Environment) properly is not feasible. Or if the CA cannot establish bi-directional communication with the machine for some reason. ACME provides an automated mechanism for generating certificate signing requests and validating the domain ownership to the CA.</p> <p>By understanding these concepts, we can effectively utilize TLS certificates to establish secure and trusted communication channels, ensuring the green lock symbol and seamless HTTPS functionality in our browsers.</p> <h2 id="acme">ACME</h2> <p>If you have previous experience with Let’s Encrypt or certbot, then you are likely familiar with the ACME (Automated Certificate Management Environment) protocol. ACME is a collection of protocols that servers can employ to demonstrate their ownership of domain names to Certificate Authorities (CAs) when requesting certificates. The primary purpose of a certificate is to certify that machineA.ctld is indeed the owner of a specific public key.</p> <p>ACME offers two verification methods, with the less commonly used method being DNS certification. In this approach, the client server contacts the ACME server and claims ownership of machineA.ctld. The client server provides a Certificate Signing Request (CSR) to the ACME server for signing. The ACME server then requests the client server to add a specific string to the TXT section of the DNS record. If the server genuinely owns machineA.ctld and its authoritative nameserver supports an API for managing domain records, the server can perform the required operation and have it verified by the ACME server. However, as we are utilizing dnsmasq as our DNS server, the specific steps for performing this operation are not within my expertise.</p> <p>It is worth noting that the DNS certification method is less common compared to the alternative method, which involves proving ownership through HTTP-based challenges. This method requires the server to respond to a challenge by placing a designated file at a specified location on the web server. The ACME server then attempts to access the file to validate ownership. This approach is generally more straightforward to implement and is not dependent on what API your DNS provider happens to supply.</p> <h2 id="step-ca">Step CA</h2> <p>To proceed with setting up an ACME server on a Raspberry Pi, we can follow the guide provided at https://smallstep.com/blog/build-a-tiny-ca-with-raspberry-pi-yubikey/. Although the guide incorporates using a YubiKey for loading keys, it is not necessary for our purposes. However, adhering to proper security practices is always recommended, and if you have access to YubiKeys, it can enhance the overall security of the setup. I get them for free at work. There is an option to use the infnoise generator dongle, but we will opt because it costs too much and I don’t get them for free at work. I recommend you use the same Raspberry Pi you’re hosting the ctld DNS off of. Note that the ACME server will run on port 443, while the DNS server will operate on port 53, ensuring that there won’t be any conflicts between the two services.</p> <p>During the setup process, remember to modify the domain from <code class="language-plaintext highlighter-rouge">tinyca.internal</code> to a domain of your choice with the <code class="language-plaintext highlighter-rouge">.ctld</code> extension, such as <code class="language-plaintext highlighter-rouge">ctldca.ctld</code>.</p> <p>Once you have completed this step, you will be able to request TLS certificates for your custom domain, allowing you to establish secure connections using HTTPS.</p> <h2 id="install-the-root-cert">Install the root cert</h2> <p>To ensure that your browser and servers recognize the custom TLD Certificate Authority (CA) and avoid any issues with certificate verification, install the root certificate into the truststore of your devices. This step will establish trust in the certificates issued by the custom CA.</p> <p>To verify if the installation was successful, you can open a shell or command prompt and execute the command <code class="language-plaintext highlighter-rouge">curl https://machinea.ctld</code>. If you encounter an error 60, it indicates that the CA is not recognized by your machine, indicating a problem with the root certificate installation.</p> <p>For convenience and ease of use, it is recommended to store the root certificate in a cloud drive or a similar storage solution. This way, you can readily access and install it on new devices whenever necessary.</p> <h2 id="requesting-a-cert">Requesting a cert</h2> <p>You can refer to the guides provided at https://smallstep.com/docs/tutorials/acme-protocol-acme-clients/ for detailed instructions on setting up various ACME clients. However, if you’re looking for a straightforward and user-friendly option, I recommend using acme.sh.</p> <h3 id="some-pitfalls-in-cert-requesting">Some pitfalls in cert requesting</h3> <p>I’ll probably split this off into separate guides when I get the chance.</p> <h4 id="haproxy">HAProxy</h4> <p>Certain reverse proxies, such as HAProxy, will require the leaf private key and certificate in one file. If this is the case you will need to cat the key and cert together. A reverse proxy may also hog port 80 and 443 which are needed to do the ACME challenge, in which case you will need to carve out a path to the ACME client.</p> <p>Here is my setup for HAProxy - it’s my octoprint server:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># In /etc/haproxy/haproxy.cfg</span>
 frontend public
     <span class="nb">bind</span> :::80 v4v6
     <span class="c"># Redirect requests to this path towards the ACME cleint instance on port 8888</span>
     acl letsencrypt-acl path_beg /.well-known/acme-challenge/
     use_backend letsencrypt-backend <span class="k">if </span>letsencrypt-acl
-    
+
     <span class="c"># Set the certificate</span>
     <span class="nb">bind</span> :::443 v4v6 ssl crt /home/pi/.acme.sh/octoprint.aws.pem
 
 <span class="c"># This is the acme.sh port</span>
 backend letsencrypt-backend
         server letsencrypt 127.0.0.1:8888
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># In crontab
-# Request certs, place them in /some/config/dir. Follow the guide for details on configuring this. 
-0 * * * * /some/dir/acme.sh --cron --home "/some/config/dir/" --force --httpport 8888 
+</code></pre></div></div> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># In crontab
+# Request certs, place them in /some/config/dir. Follow the guide for details on configuring this.
+0 * * * * /some/dir/acme.sh --cron --home "/some/config/dir/" --force --httpport 8888
 
 # Combine the privKey and the cert. Order matters here
 1 * * * * cat /some/config/dir/machineA.ctld.key /some/config/dir/machineA.ctld.crt &gt; /some/config/dir/machineA.ctld.pem
-</code></pre></div></div>
-
-<p>You also need to reload the certificate cause HAProxy is too dumb to pick up that you edited it. Drop this script into
-a file, edit your crontab to run it. Also maybe edit out the octoprint stuff:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+</code></pre></div></div> <p>You also need to reload the certificate cause HAProxy is too dumb to pick up that you edited it. Drop this script into a file, edit your crontab to run it. Also maybe edit out the octoprint stuff:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="nb">echo</span> “<span class="o">==========================</span> SET SSL CERT <span class="o">==========================</span>“
 <span class="nb">echo</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">cat</span> /home/pi/.acme.sh/octoprint.aws.pem<span class="si">)</span><span class="s2">"</span>
 <span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"set ssl cert /home/pi/.acme.sh/octoprint.aws.pem &lt;&lt;</span><span class="se">\n</span><span class="si">$(</span><span class="nb">cat</span> /home/pi/.acme.sh/octoprint.aws.pem<span class="si">)</span><span class="se">\n</span><span class="s2">"</span> | socat tcp-connect:localhost:9999 -
@@ -461,175 +133,31 @@ a file, edit your crontab to run it. Also maybe edit out the octoprint stuff:</p
 <span class="nb">echo</span> <span class="s2">"commit ssl cert /home/pi/.acme.sh/octoprint.aws.pem"</span> | socat tcp-connect:localhost:9999 -
 <span class="nb">echo</span> “<span class="o">==========================</span> SHOW SSL CERT - after <span class="o">==========================</span>“
 <span class="nb">echo</span> <span class="s2">"show ssl cert /home/pi/.acme.sh/octoprint.aws.pem"</span> | socat tcp-connect:localhost:9999 -
-</code></pre></div></div>
+</code></pre></div></div> <h4 id="homeassistant">HomeAssistant</h4> <p>This one is a pain in the ass. Haven’t gotten this up and running yet. I’ll write another post to document this.</p>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech"/><category term="AndyWebServices"/><category term="Tailscale"/><category term="network"/><summary type="html"><![CDATA[Pretending to be a legit enterprise with my own TLD]]></summary></entry><entry><title type="html">Notes on Arduino GPS Library</title><link href="https://andrewmzhang.com/blog/2021/arduino-gps-notes/" rel="alternate" type="text/html" title="Notes on Arduino GPS Library"/><published>2021-06-18T00:00:00+00:00</published><updated>2021-06-18T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2021/arduino-gps-notes</id><content type="html" xml:base="https://andrewmzhang.com/blog/2021/arduino-gps-notes/"><![CDATA[<p>Note: I splurged on a better quality (though way more expensive) shields from sparkfun. Thus this post will probably remain unupdated.</p> <h4 id="intro">Intro</h4> <p>I bought DFRobot SIM 808 shield. Cheap shield. However, the library provided by DFRobot is not great. Here are my notes and possible solutions and a low quality fork.</p> <p>On Terminology:</p> <ul> <li>Board refers to the arduino. I used an Arduino Uno Rev3.</li> <li>Shield refers to the DFRobot Shield.</li> </ul> <h1 id="my-fork">My Fork</h1> <ol> <li><a href="https://github.com/andrewmzhang/arduino-sim808">andrewmzhang arduino-sim808 fork</a></li> </ol> <p>I present my fork of the library, along with an updated version of the sample usage. The best way to use this is to un-stack the shield from the arduino and connect the power lines via male-to-male jumpers. Power pins, pin 12, pin 13 on the board should connect to analogous pins on the shield. Remap pins 2 and 3 from the arduino to pins 0 and 1 on the shield. I explain my motivation for this design below</p> <h1 id="dfrobot-sim808-library-and-resources">DFRobot SIM808 Library and Resources</h1> <ol> <li><a href="https://github.com/DFRobot/DFRobot_SIM808">DFRobot SIM808 Github Repo</a></li> <li><a href="https://wiki.dfrobot.com/SIM808_GPS_GPRS_GSM_Shield_SKU__TEL0097">DFRobot SIM808 Wiki Docs</a></li> </ol> <h2 id="pros">Pros</h2> <p>The documentation has tool called a Serial Debugger. Super useful. You can issue direct AT (which I understand is some kind of protocol sent over Serial) commands to the shield. There’s a typo in the GPS Orientation command. It should say <code class="language-plaintext highlighter-rouge">AT + CGNS PWR = 1</code>.</p> <h2 id="cons">Cons</h2> <p>There are a few issues with this shield. The first issue is that the module communicates with the arduino board through the default TX RX serial ports; pins 0 and 1 are the Arduino Uno. This is a problem because those pins are also connected to the USB Serial line which means:</p> <ol> <li>You cannot upload sketches without powering down the shield.</li> <li>All communication sent to the shield will also show up in USB Serial Monitor.</li> <li>Any prints done on arduino will show up on the USB Serial Monitor and will be sent to the shield.</li> <li>This means debugging is nuts; say you want to print out what the Sim808 library buffer is receiving from the shield and print it w/ Serial.println. This will cause a feedback loop since the library buffer will catch it again. This makes the shield a pain to debug.</li> </ol> <p>The Library is also not particularly well written. A lot of features are missing, such as trying to get the number of satellites in view. And the design of the library is questionable; IIRC the getGPRMS code read 1 char from the serial stream, adds it toa global buffer, checks to see if the global buffer has accumulated to a valid GPRMS (it ignores all other NMEA streams types), and fails if it doesn’t. This means you <em>need</em> to wrap calls to getGPS in a while loop since getGPS will fail a lot…</p> <p>NOTE: I might need to double check the above. I kinda forgot how the lib actually works and I don’t wanna check at 2:26 AM… I will verify/fix this section ASAP…</p> <h1 id="blemasle-arduino-sim808-library">blemasle arduino-sim808 library</h1> <ol> <li><a href="https://github.com/blemasle/arduino-sim808">blemasle library</a></li> </ol> <p>This library appears to be written for the Adafruit FONA? Not sure.</p> <h2 id="pros-1">Pros</h2> <p>This library has super good logic, also really clean code, fully featured. Some bugs/idiosyncrasies but I’m not using the right board so eh…</p> <h2 id="cons-1">Cons</h2> <p>It doesn’t work on the DFRobot shield very well. Also no comments so its a pain to figure out how it works.</p> <p>There is also a <a href="https://github.com/blemasle/arduino-sim808/issues/19">bug</a>!</p> <h1 id="fixes">Fixes</h1> <p>I present my fixes on the arduino-sim808 library for the DFRobot shield.</p> <h2 id="hardware">Hardware</h2> <h3 id="serial-communication-with-the-sim808">Serial communication with the SIM808</h3> <p>The solution here is to un-stack the shield and then just use male-to-male jumpers to connect over the power pins. Pins 13 and 12, and connect pins 0,1 on the shield to 2,3 on the board respectively. Then we will use software serial to communicate with the shield, and use the default 0, 1 pins to print Serial messages as per usual. This prevents the Serial prints and board buffer printouts to get feedback looped or whatever.</p> <h3 id="power-on">Power On</h3> <p>The shield comes with a boot switch. The documentation on the DFRWiki (link here) states that we can press the switch for 1s to power on and 3s to power off. It also states that the switch is also tied to pin D12. Do programatically hit the switch, write high to D12 for X seconds. We can use this trigger the SIM808 power on/off.</p> <h3 id="reset-pin">Reset Pin</h3> <p>Although there are traces on the board leading from the SIM808 SIM RESET pin on the SIM808 chip, I can’t figure out where they lead to. The Leonardo version of this shield has some jumpers to tap into that trace, but no on the arduino shield. Thus we leave this alone.</p> <h3 id="status-pin">Status Pin</h3> <p>Again, there are no jumpers to access this on the arduino version of the shield.</p> <h2 id="software">Software</h2> <p>We use the Software Serial to 2,3 to communicate with the shield.</p> <p>I’m not sure when RDY gets sent. When I had the shield serial connected to board serial default (0,1), I never got the RDY response from the shield and setting the baud rate into non-volatile memory (AT?? command) never held across reboot. You only get the RDY if the baud is set according to the docs. Thus in the default library with the default serial comms, the sim808 gets stuck on init waiting on RDY</p> <p>Another issue is that if the GPS fix fails (not enough satellites to perform trilateration), you cannot get any data from NMEA streams that are available; current time, number of GPS in view, etc. I have fixed this (insert github line link here)</p>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech"/><category term="GPS"/><category term="SIM808"/><category term="DFRobot"/><category term="arduino"/><category term="arduino-sim808"/><summary type="html"><![CDATA[playing around with the DFRobot SIM808 shield and some SIM808 libraries...]]></summary></entry><entry><title type="html">Mosh + Tmux + Copy Paste</title><link href="https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425/" rel="alternate" type="text/html" title="Mosh + Tmux + Copy Paste"/><published>2020-02-06T02:01:00+00:00</published><updated>2020-02-06T02:01:00+00:00</updated><id>https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425</id><content type="html" xml:base="https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425/"><![CDATA[<h1 id="outdated">OUTDATED</h1> <h4 id="this-guide-is-outdated-im-keeping-this-up-for-my-own-records-the-updated-guide-to-setting-this-up-will-be-placed">This guide is outdated. I’m keeping this up for my own records. The updated guide to setting this up will be placed</h4> <h4 id="here-when-ready-link">here when ready &lt;link&gt;</h4> <p>The overarching goal is to set up what I believe to be the ideal remote development terminal setup; mosh into remote -&gt; tmux + ability to copy paste to local machine.</p> <h3 id="background">Background</h3> <p>To achieve the stated goal, we implement the OSC 52 escape command within the default terminal provided by the Ubuntu OS 16.04 (gnome-terminal) so I could copy and paste to the system clipboard through terminal escapes, ie <code class="language-plaintext highlighter-rouge">printf "\033]52;c;$(printf "%s" "test" | base64)\a"</code> should copy “test” into the local OS clipboard.</p> <p>This particular version of vte was chosen due to the fact that its the default version of libvte for ubuntu 16.04, which is what I use. This patch won’t work for more modern versions of vte as the code has changed significantly.</p> <h4 id="unsolved-problems">Unsolved problems</h4> <p>Since the goal is for personal use on tmux, this OSC 52 patch does not cover all use cases for OSC 52. In fact this patch only supports the c; option (it assumes all OSC 52 escapes are trying to reach the clipboard). <a href="https://www.xfree86.org/current/ctlseqs.html">osc 52 documentation</a></p> <h3 id="git-patch">Git Patch</h3> <p><a href="/assets/vte_osc52.patch">patch code</a></p> <p><code class="language-plaintext highlighter-rouge">git clone https://github.com/andrewmzhang/vte.git</code></p> <h3 id="to-install-wo-overriding-default-libvte-install">To Install w/o Overriding Default libvte Install</h3> <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Dependencies</span>
 
-<h4 id="homeassistant">HomeAssistant</h4>
-
-<p>This one is a pain in the ass. Haven’t gotten this up and running yet. I’ll write another post to document this.</p>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech" /><category term="AndyWebServices" /><category term="Tailscale" /><category term="network" /><summary type="html"><![CDATA[Pretending to be a legit enterprise with my own TLD]]></summary></entry><entry><title type="html">Notes on Arduino GPS Library</title><link href="https://andrewmzhang.com/blog/2021/arduino-gps-notes/" rel="alternate" type="text/html" title="Notes on Arduino GPS Library" /><published>2021-06-18T00:00:00+00:00</published><updated>2021-06-18T00:00:00+00:00</updated><id>https://andrewmzhang.com/blog/2021/arduino-gps-notes</id><content type="html" xml:base="https://andrewmzhang.com/blog/2021/arduino-gps-notes/"><![CDATA[<p>Note: I splurged on a better quality (though way more expensive) shields from sparkfun. Thus this post will probably remain unupdated.</p>
-
-<h4 id="intro">Intro</h4>
-
-<p>I bought DFRobot SIM 808 shield. Cheap shield. However, the library provided by DFRobot is not great. Here are my notes and possible solutions and a low quality fork.</p>
-
-<p>On Terminology:</p>
-<ul>
-  <li>Board refers to the arduino. I used an Arduino Uno Rev3.</li>
-  <li>Shield refers to the DFRobot Shield.</li>
-</ul>
-
-<h1 id="my-fork">My Fork</h1>
-<ol>
-  <li><a href="https://github.com/andrewmzhang/arduino-sim808">andrewmzhang arduino-sim808 fork</a></li>
-</ol>
-
-<p>I present my fork of the library, along with an updated version of the sample usage. The best way to use this is to un-stack the shield from the arduino and connect the power lines via male-to-male jumpers. Power pins, pin 12, pin 13 on the board should connect to analogous pins on the shield. Remap pins 2 and 3 from the arduino to pins 0 and 1 on the shield. I explain my motivation for this design below</p>
-
-<h1 id="dfrobot-sim808-library-and-resources">DFRobot SIM808 Library and Resources</h1>
-
-<ol>
-  <li><a href="https://github.com/DFRobot/DFRobot_SIM808">DFRobot SIM808 Github Repo</a></li>
-  <li><a href="https://wiki.dfrobot.com/SIM808_GPS_GPRS_GSM_Shield_SKU__TEL0097">DFRobot SIM808 Wiki Docs</a></li>
-</ol>
-
-<h2 id="pros">Pros</h2>
-
-<p>The documentation has tool called a Serial Debugger. Super useful. You can issue direct AT (which I understand is some kind of protocol sent over Serial) commands to the shield. There’s a typo in the GPS Orientation command. It should say <code class="language-plaintext highlighter-rouge">AT + CGNS PWR = 1</code>.</p>
-
-<h2 id="cons">Cons</h2>
-
-<p>There are a few issues with this shield. The first issue is that the module communicates with the arduino board through the default TX RX serial ports; pins 0 and 1 are the Arduino Uno. This is a problem because those pins are also connected to the USB Serial line which means:</p>
-
-<ol>
-  <li>You cannot upload sketches without powering down the shield.</li>
-  <li>All communication sent to the shield will also show up in USB Serial Monitor.</li>
-  <li>Any prints done on arduino will show up on the USB Serial Monitor and will be sent to the shield.</li>
-  <li>This means debugging is nuts; say you want to print out what the Sim808 library buffer is receiving from the shield and print it w/ Serial.println. This will cause a feedback loop since the library buffer will catch it again. This makes the shield a pain to debug.</li>
-</ol>
-
-<p>The Library is also not particularly well written. A lot of features are missing, such as trying to get the number of satellites in view. And the design of the library is questionable; IIRC the getGPRMS code read 1 char from the serial stream, adds it toa global buffer, checks to see if the global buffer has accumulated to a valid GPRMS (it ignores all other NMEA streams types), and fails if it doesn’t. This means you <em>need</em> to wrap calls to getGPS in a while loop since getGPS will fail a lot…</p>
-
-<p>NOTE: I might need to double check the above. I kinda forgot how the lib actually works and I don’t wanna check at 2:26 AM… I will verify/fix this section ASAP…</p>
-
-<h1 id="blemasle-arduino-sim808-library">blemasle arduino-sim808 library</h1>
-
-<ol>
-  <li><a href="https://github.com/blemasle/arduino-sim808">blemasle library</a></li>
-</ol>
-
-<p>This library appears to be written for the Adafruit FONA? Not sure.</p>
-
-<h2 id="pros-1">Pros</h2>
-
-<p>This library has super good logic, also really clean code, fully featured. Some bugs/idiosyncrasies but I’m not using the right board so eh…</p>
-
-<h2 id="cons-1">Cons</h2>
-
-<p>It doesn’t work on the DFRobot shield very well. Also no comments so its a pain to figure out how it works.</p>
-
-<p>There is also a <a href="https://github.com/blemasle/arduino-sim808/issues/19">bug</a>!</p>
-
-<h1 id="fixes">Fixes</h1>
-
-<p>I present my fixes on the arduino-sim808 library for the DFRobot shield.</p>
-
-<h2 id="hardware">Hardware</h2>
-
-<h3 id="serial-communication-with-the-sim808">Serial communication with the SIM808</h3>
-
-<p>The solution here is to un-stack the shield and then just use male-to-male jumpers to connect over the power pins. Pins 13 and 12, and connect pins 0,1 on the shield to 2,3 on the board respectively. Then we will use software serial to communicate with the shield, and use the default 0, 1 pins to print Serial messages as per usual. This prevents the Serial prints and board buffer printouts to get feedback looped or whatever.</p>
-
-<h3 id="power-on">Power On</h3>
-
-<p>The shield comes with a boot switch. The documentation on the DFRWiki (link here) states that we can press the switch for 1s to power on and 3s to power off. It also states that the switch is also tied to pin D12. Do programatically hit the switch, write high to D12 for X seconds. We can use this trigger the SIM808 power on/off.</p>
-
-<h3 id="reset-pin">Reset Pin</h3>
-
-<p>Although there are traces on the board leading from the SIM808 SIM RESET pin on the SIM808 chip, I can’t figure out where they lead to. The Leonardo version of this shield has some jumpers to tap into that trace, but no on the arduino shield. Thus we leave this alone.</p>
-
-<h3 id="status-pin">Status Pin</h3>
-
-<p>Again, there are no jumpers to access this on the arduino version of the shield.</p>
-
-<h2 id="software">Software</h2>
-
-<p>We use the Software Serial to 2,3 to communicate with the shield.</p>
-
-<p>I’m not sure when RDY gets sent. When I had the shield serial connected to board serial default (0,1), I never got the RDY response from the shield and setting the baud rate into non-volatile memory (AT?? command) never held across reboot. You only get the RDY if the baud is set according to the docs. Thus in the default library with the default serial comms, the sim808 gets stuck on init waiting on RDY</p>
-
-<p>Another issue is that if the GPS fix fails (not enough satellites to perform trilateration), you cannot get any data from NMEA streams that are available; current time, number of GPS in view, etc. I have fixed this (insert github line link here)</p>]]></content><author><name>Andrew M. Zhang</name></author><category term="tech" /><category term="GPS" /><category term="SIM808" /><category term="DFRobot" /><category term="arduino" /><category term="arduino-sim808" /><summary type="html"><![CDATA[playing around with the DFRobot SIM808 shield and some SIM808 libraries...]]></summary></entry><entry><title type="html">Mosh + Tmux + Copy Paste</title><link href="https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425/" rel="alternate" type="text/html" title="Mosh + Tmux + Copy Paste" /><published>2020-02-06T02:01:00+00:00</published><updated>2020-02-06T02:01:00+00:00</updated><id>https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425</id><content type="html" xml:base="https://andrewmzhang.com/blog/2020/osc-52-patch-for-vte-0425/"><![CDATA[<h1 id="outdated">OUTDATED</h1>
-
-<h4 id="this-guide-is-outdated-im-keeping-this-up-for-my-own-records-the-updated-guide-to-setting-this-up-will-be-placed">This guide is outdated. I’m keeping this up for my own records. The updated guide to setting this up will be placed</h4>
-<h4 id="here-when-ready-link">here when ready &lt;link&gt;</h4>
-
-<p>The overarching goal is to set up what I believe to be the ideal remote development terminal setup; mosh into remote -&gt; tmux + ability to copy paste to local machine.</p>
-
-<h3 id="background">Background</h3>
-
-<p>To achieve the stated goal, we implement the OSC 52 escape command within the default terminal provided by the Ubuntu OS 16.04 (gnome-terminal) so I could copy and paste to the system clipboard through terminal escapes, ie <code class="language-plaintext highlighter-rouge">printf "\033]52;c;$(printf "%s" "test" | base64)\a"</code> should copy “test” into the local OS clipboard.</p>
-
-<p>This particular version of vte was chosen due to the fact that its the default version of libvte for ubuntu 16.04, which is what I use. This patch won’t work for more modern versions of vte as the code has changed significantly.</p>
-
-<h4 id="unsolved-problems">Unsolved problems</h4>
-
-<p>Since the goal is for personal use on tmux, this OSC 52 patch does not cover all use cases for OSC 52. In fact this patch only supports the c; option (it assumes all OSC 52 escapes are trying to reach the clipboard). <a href="https://www.xfree86.org/current/ctlseqs.html">osc 52 documentation</a></p>
-
-<h3 id="git-patch">Git Patch</h3>
-
-<p><a href="/assets/vte_osc52.patch">patch code</a></p>
-
-<p><code class="language-plaintext highlighter-rouge">git clone https://github.com/andrewmzhang/vte.git</code></p>
-
-<h3 id="to-install-wo-overriding-default-libvte-install">To Install w/o Overriding Default libvte Install</h3>
-
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Dependencies</span>
 <span class="nb">sudo </span>apt-get <span class="nb">install </span>gtk-doc-tools gobject-introspection valac libvala-dev libgnutls-dev libgirepository1.0-dev gperf
 
-
 <span class="c"># Will install to /opt/vte</span>
+
 ./autogen.sh <span class="nt">--prefix</span><span class="o">=</span>/opt/vte
 make
-<span class="nb">sudo </span>make <span class="nb">install</span></code></pre></figure>
+<span class="nb">sudo </span>make <span class="nb">install</span></code></pre></figure> <h3 id="setting-up-gnome-terminal">Setting Up gnome-terminal</h3> <p>Initially I tried to devise a way to have 2 different gnome-terminal executables, one that would launch with the doctored libvte library and the other untouched, since I don’t have functionality to turn off OSC 52 escapes once implemented. Unfortunately it seems that gnome-terminal uses the system global name “org.gnome.Terminal” to communicate through the dbus. I don’t know how dbus works, so I didn’t attempt to manipulate it.</p> <p>When gnome-terminal launches, it actually communicates w/ gnome-terminal-server (or launches it) and gnome-terminal exits (see post on this: <a href="https://eklitzke.org/gnome-terminal-server">gnome-terminal-server-explained</a> ). So we actually need to get gnome-terminal-server to use our doctored lib.</p> <p>gnome-terminal/gnome-terminal-server version 3.18.3 on the defaul Ubuntu install seems to be a bit different from what sits at the gnome gitlab repository. Instead of trying to install whatever patches Ubuntu utilizes, I opted to relink the gnome-terminal-server executable to point to our doctored lib.</p> <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Will show you what libvte links to</span>
 
-<h3 id="setting-up-gnome-terminal">Setting Up gnome-terminal</h3>
+ldd /usr/lib/gnome-terminal/gnome-terminal-server | <span class="nb">grep</span> <span class="s2">"vte"</span>
 
-<p>Initially I tried to devise a way to have 2 different gnome-terminal executables, one that would launch with the doctored libvte library and the other untouched, since I don’t have functionality to turn off OSC 52 escapes once implemented. Unfortunately it seems that gnome-terminal uses the system global name “org.gnome.Terminal” to communicate through the dbus. I don’t know how dbus works, so I didn’t attempt to manipulate it.</p>
-
-<p>When gnome-terminal launches, it actually communicates w/ gnome-terminal-server (or launches it) and gnome-terminal exits (see post on this: <a href="https://eklitzke.org/gnome-terminal-server">gnome-terminal-server-explained</a> ). So we actually need to get gnome-terminal-server to use our doctored lib.</p>
-
-<p>gnome-terminal/gnome-terminal-server version 3.18.3 on the defaul Ubuntu install seems to be a bit different from what sits at the gnome gitlab repository. Instead of trying to install whatever patches Ubuntu utilizes, I opted to relink the gnome-terminal-server executable to point to our doctored lib.</p>
-
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Will show you what libvte links to</span>
-ldd /usr/lib/gnome-terminal/gnome-terminal-server | <span class="nb">grep</span> <span class="s2">"vte"</span> 
 <span class="c"># outputs: libvte-2.91.so.0 =&gt; /usr/lib/x86_64-linux-gnu/libvte-2.91.so.0</span>
 
 <span class="c"># Backup gnome-terminal-server</span>
+
 <span class="nb">sudo cp</span> /usr/lib/gnome-terminal/gnome-terminal-server /usr/lib/gnome-terminal/gnome-terminal-server.bak
 
 <span class="c"># Relink the library; Run the patchelf on a non libvte based emulator (eg xterm)</span>
+
 <span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> patchelf
-<span class="nb">sudo </span>patchelf <span class="nt">--replace-needed</span> libvte-2.91.so.0 /opt/vte/lib/libvte-2.91.so.0 /usr/lib/gnome-terminal/gnome-terminal-server</code></pre></figure>
+<span class="nb">sudo </span>patchelf <span class="nt">--replace-needed</span> libvte-2.91.so.0 /opt/vte/lib/libvte-2.91.so.0 /usr/lib/gnome-terminal/gnome-terminal-server</code></pre></figure> <h4 id="fixing-the-colours">Fixing the colours</h4> <p>The colours might have changed (for me libvte put up a white background w/ black text). To fix this open gnome-terminal-&gt;profile preferences-&gt;colors</p> <p>Change the text color to: <code class="language-plaintext highlighter-rouge">#FEF8D9</code> Change the background color to: <code class="language-plaintext highlighter-rouge">#300A24</code> Bold color to: [x] Same as text color</p> <h3 id="setting-up-tmux-and-mosh">Setting Up tmux and mosh</h3> <p>First, we need to tell tmux to copy via OSC 52. To do this we need to set the clipboard.</p> <p>Tmux supports OSC 52 but does not pass the “c;” option, according to <a href="https://gist.github.com/yudai/95b20e3da66df1b066531997f982b57b">yudai’s post</a>. However we can force it to pass the “c;” option. Mosh is capable of catching the OSC 52 option c (the default mosh only accepts the “c;” option). Thus adding these lines to the tmux.conf should allow us to copy into local clipboard. I think if you install this <a href="https://github.com/mobile-shell/mosh/pull/1054">mosh pr</a> it supports the other OSC 52 options.</p> <p>Note: This only works for more recent version of tmux.</p> <figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># sets tmux to use OSC 52 escape</span>
 
-<h4 id="fixing-the-colours">Fixing the colours</h4>
-
-<p>The colours might have changed (for me libvte put up a white background w/ black text). To fix this open gnome-terminal-&gt;profile preferences-&gt;colors</p>
-
-<p>Change the text color to: <code class="language-plaintext highlighter-rouge">#FEF8D9</code>
-Change the background color to: <code class="language-plaintext highlighter-rouge">#300A24</code>
-Bold color to: [x] Same as text color</p>
-
-<h3 id="setting-up-tmux-and-mosh">Setting Up tmux and mosh</h3>
-
-<p>First, we need to tell tmux to copy via OSC 52. To do this we need to set the clipboard.</p>
-
-<p>Tmux supports OSC 52 but does not pass the “c;” option, according to <a href="https://gist.github.com/yudai/95b20e3da66df1b066531997f982b57b">yudai’s post</a>. However we can force it to pass the “c;” option. Mosh is capable of catching the OSC 52 option c (the default mosh only accepts the “c;” option). Thus adding these lines to the tmux.conf should allow us to copy into local clipboard. I think if you install this <a href="https://github.com/mobile-shell/mosh/pull/1054">mosh pr</a> it supports the other OSC 52 options.</p>
-
-<p>Note: This only works for more recent version of tmux.</p>
-
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># sets tmux to use OSC 52 escape</span>
 <span class="nb">set</span> <span class="nt">-g</span> set-clipboard on
 
 <span class="c"># Forces tmux to use the "c;" option</span>
-<span class="nb">set</span> <span class="nt">-ag</span> terminal-overrides <span class="s2">"vte*:XT:Ms=</span><span class="se">\\</span><span class="s2">E]52;c;%p2%s</span><span class="se">\\</span><span class="s2">7,xterm*:XT:Ms=</span><span class="se">\\</span><span class="s2">E]52;c;%p2%s</span><span class="se">\\</span><span class="s2">7"</span></code></pre></figure>
 
-<h3 id="contributions">Contributions</h3>
-<p>Big thanks to <a href="https://people.eecs.berkeley.edu/~kevinz/">Kevin Zheng</a> for providing most of the code :)</p>]]></content><author><name>Andrew M. Zhang + Kevin Zheng</name></author><summary type="html"><![CDATA[adding osc52 copy paste functionality to gnome-terminal so we can use mosh, remote tmux, and copy paste]]></summary></entry></feed>
+<span class="nb">set</span> <span class="nt">-ag</span> terminal-overrides <span class="s2">"vte*:XT:Ms=</span><span class="se">\\</span><span class="s2">E]52;c;%p2%s</span><span class="se">\\</span><span class="s2">7,xterm*:XT:Ms=</span><span class="se">\\</span><span class="s2">E]52;c;%p2%s</span><span class="se">\\</span><span class="s2">7"</span></code></pre></figure> <h3 id="contributions">Contributions</h3> <p>Big thanks to <a href="https://people.eecs.berkeley.edu/~kevinz/">Kevin Zheng</a> for providing most of the code :)</p>]]></content><author><name>Andrew M. Zhang + Kevin Zheng</name></author><summary type="html"><![CDATA[adding osc52 copy paste functionality to gnome-terminal so we can use mosh, remote tmux, and copy paste]]></summary></entry></feed>
