@@ -9,7 +9,7 @@ author: Andrew M. Zhang
 ---
 
 Note: It's like 2am and I was too sleepy to edit this, so I fed it through chatGPT and called it a day. I think it
-made some minor mistakes and poor word choice. I'll fix it tomorrow or something... 
+made some minor mistakes and poor word choice. I'll fix it tomorrow or something...
 
 # Intro
 
@@ -27,10 +27,10 @@ company. This credibility is essential for attracting investors and achieving a 
 
 To clarify. These are the requirements:
 
-* Any and only devices connected by my Tailscale network should be able to access the custom tld network
-* I intend to use a custom TLD format, such as hostname.ctld. For the purpose of this guide, I will use .ctld as the
+- Any and only devices connected by my Tailscale network should be able to access the custom tld network
+- I intend to use a custom TLD format, such as hostname.ctld. For the purpose of this guide, I will use .ctld as the
   TLD.
-* HTTPS functionality
+- HTTPS functionality
 
 # Resolving a custom TLD over Tailscale
 
@@ -44,14 +44,14 @@ To incorporate a custom TLD into this setup, the first step is to set up a dedic
 domains. I recommend following the setup outlined below:
 
 1. Obtain a Raspberry Pi device.
-    1. If you intend to replicate my network setup, install and configure Ubuntu on the Raspberry Pi.
+   1. If you intend to replicate my network setup, install and configure Ubuntu on the Raspberry Pi.
 2. Connect the Raspberry Pi to the Tailscale (TS) network. For the sake of this guide, let's assume it is assigned the
    TS IP address `100.100.100.101`.
 3. Install and set up `dnsmasq` on the Raspberry Pi.
 4. Edit the `/etc/hosts` file on the Raspberry Pi to manually define the DNS entries.
-    1. In case you are using the default Ubuntu installation, you may need to modify the cloud-init template. Please
-       refer to the comments in your `/etc/hosts` file for guidance.
-    2. The entries in the `/etc/hosts` file should resemble the following format:
+   1. In case you are using the default Ubuntu installation, you may need to modify the cloud-init template. Please
+      refer to the comments in your `/etc/hosts` file for guidance.
+   2. The entries in the `/etc/hosts` file should resemble the following format:
 
 ```bash
 # /etc/hosts
@@ -179,9 +179,9 @@ I'll probably split this off into separate guides when I get the chance.
 
 #### HAProxy
 
-Certain reverse proxies, such as HAProxy, will require the leaf private key and certificate in one file.  If this 
+Certain reverse proxies, such as HAProxy, will require the leaf private key and certificate in one file. If this
 is the case you will need to cat the key and cert together. A reverse proxy may also hog port 80 and 443 which are needed to
-do the ACME challenge, in which case you will need to carve out a path to the ACME client. 
+do the ACME challenge, in which case you will need to carve out a path to the ACME client.
 
 Here is my setup for HAProxy - it's my octoprint server:
 
@@ -192,7 +192,7 @@ frontend public
     # Redirect requests to this path towards the ACME cleint instance on port 8888
     acl letsencrypt-acl path_beg /.well-known/acme-challenge/
     use_backend letsencrypt-backend if letsencrypt-acl
-    
+
     # Set the certificate
     bind :::443 v4v6 ssl crt /home/pi/.acme.sh/octoprint.aws.pem
 
@@ -203,8 +203,8 @@ backend letsencrypt-backend
 
 ```
 # In crontab
-# Request certs, place them in /some/config/dir. Follow the guide for details on configuring this. 
-0 * * * * /some/dir/acme.sh --cron --home "/some/config/dir/" --force --httpport 8888 
+# Request certs, place them in /some/config/dir. Follow the guide for details on configuring this.
+0 * * * * /some/dir/acme.sh --cron --home "/some/config/dir/" --force --httpport 8888
 
 # Combine the privKey and the cert. Order matters here
 1 * * * * cat /some/config/dir/machineA.ctld.key /some/config/dir/machineA.ctld.crt > /some/config/dir/machineA.ctld.pem
@@ -229,4 +229,3 @@ echo "show ssl cert /home/pi/.acme.sh/octoprint.aws.pem" | socat tcp-connect:loc
 #### HomeAssistant
 
 This one is a pain in the ass. Haven't gotten this up and running yet. I'll write another post to document this.
-

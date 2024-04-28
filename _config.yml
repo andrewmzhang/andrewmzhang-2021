@@ -5,7 +5,7 @@
 show_drafts: false
 
 title: blank # the website title (if blank, full name will be used instead)
-first_name:  Andrew
+first_name: Andrew
 middle_name: M.
 last_name: Zhang
 email: andrewmzhang@berkeley.edu
@@ -20,9 +20,9 @@ lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: ⚛️ # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://andrewmzhang.com # the base hostname & protocol for your site
-baseurl:  # the subpath of your site, e.g. /blog/
+baseurl: # the subpath of your site, e.g. /blog/
 last_updated: true # set to true if you want to display last updated in the footer
-impressum_path:  # set to path to include impressum link in the footer, use the same path as permalink in a page, helps to conform with EU GDPR
+impressum_path: # set to path to include impressum link in the footer, use the same path as permalink in a page, helps to conform with EU GDPR
 
 # -----------------------------------------------------------------------------
 # Theme
@@ -296,7 +296,6 @@ display_categories: ["blockquotes"] # these categories will be displayed on the 
 # -----------------------------------------------------------------------------
 
 scholar:
-
   last_name: Zhang
   first_name: [Andrew, M.]
 
