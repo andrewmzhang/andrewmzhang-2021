@@ -20,7 +20,7 @@ This page assumes that you have some custom ACME server (see previous post) and 
 
 ## Explanation
 
-At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature [andrewmzhang/docker-swag](http://https://github.com/andrewmzhang/docker-swag). It's probably easier to see how the feature works by looking at the [diff](https://github.com/linuxserver/docker-swag/pull/371). This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore.
+At time of writing, docker-swag main branch does not support custom ACME servers. Fortunately for the dear reader, I have graciously implemented this feature [andrewmzhang/docker-swag](https://github.com/AndyWebServices/docker-swag). It's probably easier to see how the feature works by looking at the [diff](https://github.com/linuxserver/docker-swag/pull/371). This feature introduces 2 new environment variables. One sets the ACME server and the other sets the CABUNDLE. The CABUNDLE is required so that docker trusts the certificate authority without having to install the certificate to the OS truststore, although I still recommend installing the certificate to your OS truststore.
 
 Docker-swag is a complete solution. It'll renew the certificates once a day and refresh Nginx service to pick up the new certs.
 
