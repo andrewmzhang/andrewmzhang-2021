@@ -2,24 +2,24 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
+subtitle: Working at a Chicago-based Quant Trading Firm. Citadel Securities Quantitative Research Intern (2019 & 2020). RISELab. Former EECS Masters Student - UC Berkeley.
 
 profile:
-  align: right
-  image: prof_pic.jpg
-  image_circular: false # crops the image to make it circular
-  more_info: >
-    <p>555 your office number</p>
-    <p>123 your address street</p>
-    <p>Your City, State 12345</p>
+    align: right
+    image: prof_pic.jpg
+    image_circular: false # crops the image to make it circular
 
-news: true # includes a list of news items
+news: false  # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
-social: true # includes social icons at the bottom of the page
+social: true  # includes social icons at the bottom of the page
 ---
 
-Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](http://reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
+I don't really maintain this bio...
 
-Put your address / P.O. box / other info right below your picture. You can also disable any of these elements by editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and Jekyll will render your [publications page](/al-folio/publications/) automatically.
+I was a student pursuing an M.Sc in Computer Science at University of California - Berkeley. I was also a researcher in
+RISELab where I work under Prof. Randy Katz on serverless machine learning frameworks and serverless computing. I used
+to TA for CS189: Machine Learning and CS70: Discrete Math and Probability Theory.
 
-Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them.
+My most up-to-date resume is always provided below:
+
+[My Resume](/assets/pdf/resume.pdf){:target="_blank" rel="noopener"}
