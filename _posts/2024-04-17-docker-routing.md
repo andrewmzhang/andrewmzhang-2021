@@ -1,8 +1,8 @@
 ---
-title: Mosh + Tmux + Copy Paste
+title: Oracle Cloud VM Docker No Route To Host
 layout: post
 date: "2024-04-17 19:47:39 -0500"
-description: Oracle Cloud Docker No Route To Host
+description: Understanding Oracle Cloud + Docker iptable rules
 comments: true
 author: Andrew M. Zhang
 ---
